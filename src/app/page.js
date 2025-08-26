@@ -1,13 +1,17 @@
+// Imports
 import { getRecentPosts } from '../data/posts';
 import Image from 'next/image';
 import Link from 'next/link';
 import Navigation from '../components/Navigation';
 
+// Homepage stuff
 export default function Home() {
-  const recentPosts = getRecentPosts(1); // Only get 1 post as requested
+  // Get the 3 most recent blog posts to display
+  const recentPosts = getRecentPosts(3);
   
   return (
     <div className="min-h-screen bg-black text-white flex flex-col">
+      {/* Navigation bar */}
       <Navigation />
 
       {/* Main Content */}
@@ -15,7 +19,7 @@ export default function Home() {
         {/* Hero Section */}
         <div className="py-16">
           <div className="flex items-center gap-8">
-            {/* Avatar - Now using the Garfield image */}
+            {/* Little funny image of Garfield (I LOVE GARFIELD) */}
             <div className="w-40 h-40 rounded-3xl overflow-hidden flex-shrink-0">
               <Image 
                 src="/garfield.png" 
@@ -26,7 +30,7 @@ export default function Home() {
               />
             </div>
             
-            {/* Content - Centered text only */}
+            {/* About me */}
             <div className="flex-1 flex items-center">
               <p className="text-gray-400 leading-relaxed text-sm">
                 This is my newly created blog to document my coding journey. I will talk about many things here. Hope you enjoy reading my posts! 
@@ -37,23 +41,30 @@ export default function Home() {
 
         {/* Recent Blogs Section */}
         <div className="pb-16">
+          {/* Title and link to all blogs */}
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-xl font-semibold">RECENT BLOGS</h2>
             <Link href="/blog" className="text-purple-400 text-sm hover:text-purple-300">ALL BLOGS →</Link>
           </div>
           
-          {/* Blog Posts - Only 1 post now */}
+          {/* Recent blog posts list */}
           <div className="space-y-6">
+            {/* Loop through recent posts */}
             {recentPosts.map((post) => (
               <div key={post.id} className="flex items-start space-x-6">
+                {/* Post number */}
                 <div className="text-6xl font-bold text-white w-20 text-center">
                   {post.id}
                 </div>
+                {/* Post content */}
                 <div className="flex-1">
+                  {/* Post title (clickable link) */}
                   <h3 className="text-xl font-medium text-white mb-2 hover:text-purple-300 cursor-pointer">
                     <Link href={`/blog/${post.slug}`}>{post.title}</Link>
                   </h3>
+                  {/* Post preview text */}
                   <p className="text-gray-400 text-sm mb-2">{post.excerpt}</p>
+                  {/* Post date and read time */}
                   <div className="text-gray-500 text-xs">
                     <span>{post.date}</span>
                     <span className="mx-2">•</span>
