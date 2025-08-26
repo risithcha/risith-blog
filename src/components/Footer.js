@@ -11,7 +11,14 @@ export default function Footer() {
         </div>
         {/* "Copyright" stuff */}
         <div className="text-center text-gray-500 text-xs">
-          2025 © Risith | Made by Risith
+          2025 © Risith | Made by <a 
+            href="https://github.com/risithcha/risith-blog" 
+            className="hover:text-white transition-colors" 
+            target="_blank" 
+            rel="noopener noreferrer"
+          >
+            Risith
+          </a>
         </div>
       </div>
     </footer>
