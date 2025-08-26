@@ -21,10 +21,10 @@
   }
 
   body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
+    background-color: theme(colors.background);
+    color: theme(colors.foreground);
     min-height: 100vh;
-    font-family: var(--font-family-sans);
+    font-family: theme(fontFamily.sans);
     line-height: 1.6;
   }
 }
