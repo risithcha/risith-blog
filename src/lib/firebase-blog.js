@@ -38,6 +38,8 @@ export const createBlogPost = async (postData) => {
 // Get all blog posts
 export const getAllBlogPosts = async () => {
   try {
+    console.log('Fetching all blog posts from Firebase...');
+    
     const q = query(
       collection(db, POSTS_COLLECTION), 
       where("published", "==", true),
@@ -58,9 +60,15 @@ export const getAllBlogPosts = async () => {
       });
     });
     
+    console.log(`Successfully fetched ${posts.length} blog posts`);
     return posts;
   } catch (error) {
     console.error("Error getting blog posts:", error);
+    console.error("Error details:", {
+      code: error.code,
+      message: error.message,
+      stack: error.stack
+    });
     throw error;
   }
 };
@@ -68,6 +76,8 @@ export const getAllBlogPosts = async () => {
 // Get a single blog post by slug
 export const getBlogPostBySlug = async (slug) => {
   try {
+    console.log(`Fetching blog post with slug: ${slug}`);
+    
     const q = query(
       collection(db, POSTS_COLLECTION), 
       where("slug", "==", slug),
@@ -77,11 +87,14 @@ export const getBlogPostBySlug = async (slug) => {
     const querySnapshot = await getDocs(q);
     
     if (querySnapshot.empty) {
+      console.log(`No blog post found with slug: ${slug}`);
       return null;
     }
     
     const doc = querySnapshot.docs[0];
     const data = doc.data();
+    
+    console.log(`Successfully fetched blog post: ${data.title}`);
     
     return {
       id: doc.id,
@@ -91,6 +104,11 @@ export const getBlogPostBySlug = async (slug) => {
     };
   } catch (error) {
     console.error("Error getting blog post by slug:", error);
+    console.error("Error details:", {
+      code: error.code,
+      message: error.message,
+      stack: error.stack
+    });
     throw error;
   }
 };
@@ -148,6 +166,8 @@ export const deleteBlogPost = async (postId) => {
 // Get recent blog posts (for homepage, etc.)
 export const getRecentBlogPosts = async (count = 3) => {
   try {
+    console.log(`Fetching ${count} recent blog posts from Firebase...`);
+    
     const q = query(
       collection(db, POSTS_COLLECTION),
       where("published", "==", true),
@@ -171,9 +191,15 @@ export const getRecentBlogPosts = async (count = 3) => {
       }
     });
     
+    console.log(`Successfully fetched ${posts.length} recent blog posts`);
     return posts;
   } catch (error) {
     console.error("Error getting recent blog posts:", error);
+    console.error("Error details:", {
+      code: error.code,
+      message: error.message,
+      stack: error.stack
+    });
     throw error;
   }
 };

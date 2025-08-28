@@ -4,12 +4,17 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Navigation from '../components/Navigation';
 
+// Force dynamic rendering - no caching
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 // Homepage stuff
 export default async function Home() {
   // Get the 3 most recent blog posts from Firebase
   let recentPosts = [];
   try {
     recentPosts = await getRecentBlogPosts(3);
+    console.log('Fetched posts:', recentPosts.length);
   } catch (error) {
     console.error('Error fetching recent posts:', error);
   }

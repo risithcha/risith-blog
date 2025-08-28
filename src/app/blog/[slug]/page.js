@@ -1,10 +1,12 @@
 // Imports
-import { notFound } from 'next/navigation';
-import Link from 'next/link';
+import { getAllBlogPosts, getBlogPostBySlug, formatPostDate } from '../../../lib/firebase-blog';
 import Navigation from '../../../components/Navigation';
-import { getBlogPostBySlug, getAllBlogPosts, formatPostDate } from '../../../lib/firebase-blog';
 
-// Generate pages on build so they render faster
+// Force dynamic rendering - no caching
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+// Generate static params for all blog posts
 export async function generateStaticParams() {
   try {
     const posts = await getAllBlogPosts();
@@ -17,8 +19,6 @@ export async function generateStaticParams() {
   }
 }
 
-// Blog post page component
-// Displays a single blog post based on the slug parameter
 export default async function BlogPost({ params }) {
   // Await params as required by Next.js 15
   const { slug } = await params;
@@ -28,28 +28,38 @@ export default async function BlogPost({ params }) {
   
   try {
     post = await getBlogPostBySlug(slug);
+    console.log('Fetched post:', post?.title);
   } catch (error) {
     console.error('Error fetching blog post:', error);
   }
-  
-  // If post doesn't exist, show 404 page
+
+  // If post not found, show 404
   if (!post) {
-    notFound();
+    return (
+      <div className="min-h-screen bg-black text-white flex flex-col">
+        <Navigation />
+        <div className="flex-1 max-w-4xl mx-auto px-6 w-full py-16">
+          <h1 className="text-3xl font-bold mb-4">Post Not Found</h1>
+          <p className="text-gray-400">The blog post you're looking for doesn't exist.</p>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="min-h-screen bg-black text-white flex flex-col">
-      {/* Navigation bar at the top */}
+      {/* Navigation bar */}
       <Navigation />
 
       {/* Main Content */}
       <div className="flex-1 max-w-4xl mx-auto px-6 w-full">
-        <div className="py-16">
-          {/* Post Header Section */}
-          <div className="mb-8">
-            {/* Post Title */}
-            <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
-            {/* Post Metadata (date and read time) */}
+        {/* Blog Post */}
+        <article className="py-16">
+          {/* Post header */}
+          <header className="mb-12">
+            <h1 className="text-4xl font-bold mb-6">{post.title}</h1>
+            
+            {/* Post metadata */}
             <div className="flex items-center text-gray-400 text-sm mb-6">
               <span>{formatPostDate(post.createdAt)}</span>
               <span className="mx-2">•</span>
@@ -61,29 +71,21 @@ export default async function BlogPost({ params }) {
                 </>
               )}
             </div>
-          </div>
-          
-          {/* Blog Post Content */}
-          <article className="prose prose-invert prose-lg max-w-none">
+            
+            {/* Post excerpt */}
+            {post.excerpt && (
+              <p className="text-gray-400 text-lg leading-relaxed">{post.excerpt}</p>
+            )}
+          </header>
+
+          {/* Post content */}
+          <div className="prose prose-invert max-w-none">
             <div 
               className="text-gray-300 leading-relaxed"
-              // Render HTML content and convert line breaks to <br> tags
-              dangerouslySetInnerHTML={{ 
-                __html: post.content.replace(/\n/g, '<br />') 
-              }} 
+              dangerouslySetInnerHTML={{ __html: post.content }}
             />
-          </article>
-          
-          {/* Navigation Back to Blog List */}
-          <div className="mt-12 pt-8 border-t border-gray-800">
-            <Link 
-              href="/blog" 
-              className="text-purple-400 hover:text-purple-300 font-medium"
-            >
-              ← Back to all posts
-            </Link>
           </div>
-        </div>
+        </article>
       </div>
     </div>
   );
