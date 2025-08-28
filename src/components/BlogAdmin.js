@@ -1,7 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { createBlogPost, generateSlug, getAllBlogPosts, getBlogPostById, updateBlogPost, deleteBlogPost, formatPostDate } from '../lib/firebase-blog';
+import { createBlogPost, generateSlug, getAllBlogPosts, getBlogPostById, updateBlogPost, deleteBlogPost, formatPostDateFull } from '../lib/firebase-blog';
+import MDEditor from '@uiw/react-md-editor';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 // Admin panel for creating, viewing, editing, and deleting blog posts
 // This is where I can manage all my blog content
@@ -14,8 +17,7 @@ export default function BlogAdmin() {
   const [newPost, setNewPost] = useState({
     title: '',
     content: '',
-    excerpt: '',
-    readTime: '5 min read'
+    excerpt: ''
   });
   // List of all existing posts
   const [posts, setPosts] = useState([]);
@@ -23,6 +25,8 @@ export default function BlogAdmin() {
   const [editingPost, setEditingPost] = useState(null);
   // Show create form or posts list
   const [view, setView] = useState('list'); // 'list' or 'create' or 'edit'
+  // Preview mode for markdown
+  const [previewMode, setPreviewMode] = useState('edit'); // 'edit', 'preview', 'split'
 
   // Load all posts when component mounts
   useEffect(() => {
@@ -64,8 +68,7 @@ export default function BlogAdmin() {
       setNewPost({
         title: '',
         content: '',
-        excerpt: '',
-        readTime: '5 min read'
+        excerpt: ''
       });
       
       // Reload posts list
@@ -144,6 +147,14 @@ export default function BlogAdmin() {
     }
   };
 
+  // Custom styles for the markdown editor
+  const editorStyles = {
+    backgroundColor: '#000',
+    color: '#fff',
+    border: '1px solid #374151',
+    borderRadius: '0.375rem',
+  };
+
   return (
     <div className="space-y-6">
       {/* Navigation buttons */}
@@ -210,9 +221,7 @@ export default function BlogAdmin() {
                   </div>
                   <p className="text-gray-400 text-sm mb-2">{post.excerpt}</p>
                   <div className="text-gray-500 text-xs">
-                    <span>Created: {formatPostDate(post.createdAt)}</span>
-                    <span className="mx-2">•</span>
-                    <span>Read time: {post.readTime}</span>
+                    <span>Created: {formatPostDateFull(post.createdAt)}</span>
                   </div>
                 </div>
               ))
@@ -254,32 +263,81 @@ export default function BlogAdmin() {
               />
             </div>
             
-            {/* Read time input - how long it takes to read */}
-            <div>
-              <label className="block text-gray-300 text-sm font-medium mb-1">
-                Read Time
-              </label>
-              <input
-                type="text"
-                value={newPost.readTime}
-                onChange={(e) => setNewPost({ ...newPost, readTime: e.target.value })}
-                className="w-full bg-black border border-gray-700 rounded px-3 py-2 text-white"
-                placeholder="e.g., 5 min read"
-              />
+            {/* Markdown Editor Controls */}
+            <div className="flex gap-2 mb-2 items-center">
+              <button
+                type="button"
+                onClick={() => setPreviewMode('edit')}
+                className={`px-3 py-1 rounded text-sm font-medium ${
+                  previewMode === 'edit' 
+                    ? 'bg-purple-400 text-black' 
+                    : 'bg-gray-700 text-white hover:bg-gray-600'
+                }`}
+              >
+                Edit
+              </button>
+              <button
+                type="button"
+                onClick={() => setPreviewMode('preview')}
+                className={`px-3 py-1 rounded text-sm font-medium ${
+                  previewMode === 'preview' 
+                    ? 'bg-purple-400 text-black' 
+                    : 'bg-gray-700 text-white hover:bg-gray-600'
+                }`}
+              >
+                Preview
+              </button>
+              <button
+                type="button"
+                onClick={() => setPreviewMode('split')}
+                className={`px-3 py-1 rounded text-sm font-medium ${
+                  previewMode === 'split' 
+                    ? 'bg-purple-400 text-black' 
+                    : 'bg-gray-700 text-white hover:bg-gray-600'
+                }`}
+              >
+                Split View
+              </button>
             </div>
             
-            {/* Main content textarea */}
+            {/* Main content - Markdown Editor */}
             <div>
               <label className="block text-gray-300 text-sm font-medium mb-1">
-                Content
+                Content (Markdown)
               </label>
-              <textarea
-                value={newPost.content}
-                onChange={(e) => setNewPost({ ...newPost, content: e.target.value })}
-                rows={10}
-                className="w-full bg-black border border-gray-700 rounded px-3 py-2 text-white"
-                required
-              />
+              {previewMode === 'edit' && (
+                <div data-color-mode="dark">
+                  <MDEditor
+                    value={newPost.content}
+                    onChange={(value) => setNewPost({ ...newPost, content: value || '' })}
+                    height={400}
+                    preview="edit"
+                    style={editorStyles}
+                    className="w-full"
+                  />
+                </div>
+              )}
+              {previewMode === 'preview' && (
+                <div className="border border-gray-700 rounded p-4 bg-black min-h-[400px] overflow-auto prose prose-invert max-w-none">
+                  <ReactMarkdown 
+                    remarkPlugins={[remarkGfm]}
+                  >
+                    {newPost.content}
+                  </ReactMarkdown>
+                </div>
+              )}
+              {previewMode === 'split' && (
+                <div data-color-mode="dark">
+                  <MDEditor
+                    value={newPost.content}
+                    onChange={(value) => setNewPost({ ...newPost, content: value || '' })}
+                    height={400}
+                    preview="live"
+                    style={editorStyles}
+                    className="w-full"
+                  />
+                </div>
+              )}
             </div>
             
             {/* Submit button - disabled while saving */}
@@ -327,31 +385,81 @@ export default function BlogAdmin() {
               />
             </div>
             
-            {/* Read time input */}
-            <div>
-              <label className="block text-gray-300 text-sm font-medium mb-1">
-                Read Time
-              </label>
-              <input
-                type="text"
-                value={editingPost.readTime}
-                onChange={(e) => setEditingPost({ ...editingPost, readTime: e.target.value })}
-                className="w-full bg-black border border-gray-700 rounded px-3 py-2 text-white"
-              />
+            {/* Markdown Editor Controls */}
+            <div className="flex gap-2 mb-2 items-center">
+              <button
+                type="button"
+                onClick={() => setPreviewMode('edit')}
+                className={`px-3 py-1 rounded text-sm font-medium ${
+                  previewMode === 'edit' 
+                    ? 'bg-purple-400 text-black' 
+                    : 'bg-gray-700 text-white hover:bg-gray-600'
+                }`}
+              >
+                Edit
+              </button>
+              <button
+                type="button"
+                onClick={() => setPreviewMode('preview')}
+                className={`px-3 py-1 rounded text-sm font-medium ${
+                  previewMode === 'preview' 
+                    ? 'bg-purple-400 text-black' 
+                    : 'bg-gray-700 text-white hover:bg-gray-600'
+                }`}
+              >
+                Preview
+              </button>
+              <button
+                type="button"
+                onClick={() => setPreviewMode('split')}
+                className={`px-3 py-1 rounded text-sm font-medium ${
+                  previewMode === 'split' 
+                    ? 'bg-purple-400 text-black' 
+                    : 'bg-gray-700 text-white hover:bg-gray-600'
+                }`}
+              >
+                Split View
+              </button>
             </div>
             
-            {/* Main content textarea */}
+            {/* Main content - Markdown Editor */}
             <div>
               <label className="block text-gray-300 text-sm font-medium mb-1">
-                Content
+                Content (Markdown)
               </label>
-              <textarea
-                value={editingPost.content}
-                onChange={(e) => setEditingPost({ ...editingPost, content: e.target.value })}
-                rows={10}
-                className="w-full bg-black border border-gray-700 rounded px-3 py-2 text-white"
-                required
-              />
+              {previewMode === 'edit' && (
+                <div data-color-mode="dark">
+                  <MDEditor
+                    value={editingPost.content}
+                    onChange={(value) => setEditingPost({ ...editingPost, content: value || '' })}
+                    height={400}
+                    preview="edit"
+                    style={editorStyles}
+                    className="w-full"
+                  />
+                </div>
+              )}
+              {previewMode === 'preview' && (
+                <div className="border border-gray-700 rounded p-4 bg-black min-h-[400px] overflow-auto prose prose-invert max-w-none">
+                  <ReactMarkdown 
+                    remarkPlugins={[remarkGfm]}
+                  >
+                    {editingPost.content}
+                  </ReactMarkdown>
+                </div>
+              )}
+              {previewMode === 'split' && (
+                <div data-color-mode="dark">
+                  <MDEditor
+                    value={editingPost.content}
+                    onChange={(value) => setEditingPost({ ...editingPost, content: value || '' })}
+                    height={400}
+                    preview="live"
+                    style={editorStyles}
+                    className="w-full"
+                  />
+                </div>
+              )}
             </div>
             
             {/* Action buttons */}

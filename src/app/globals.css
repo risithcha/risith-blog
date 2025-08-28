@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@import '@uiw/react-md-editor/markdown-editor.css';
+@import '@uiw/react-markdown-preview/markdown.css';
 
 @theme {
   --color-background: #000000;
@@ -27,4 +29,149 @@
     font-family: var(--font-family-sans);
     line-height: 1.6;
   }
+}
+
+/* Custom styles for markdown editor */
+[data-color-mode*='dark'] {
+  --color-canvas-default: #000000;
+  --color-canvas-subtle: #000000;
+  --color-border-default: #374151;
+  --color-border-muted: #374151;
+  --color-neutral-muted: #374151;
+  --color-accent-fg: #a855f7;
+  --color-accent-emphasis: #a855f7;
+  --color-attention-subtle: #a855f7;
+  --color-danger-subtle: #ef4444;
+}
+
+/* Prose styles for markdown preview */
+.prose {
+  color: #ffffff;
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+  color: #ffffff;
+  font-weight: 600;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.prose h1 {
+  font-size: 2.25em;
+  border-bottom: 1px solid #374151;
+  padding-bottom: 0.5em;
+}
+
+.prose h2 {
+  font-size: 1.875em;
+  border-bottom: 1px solid #374151;
+  padding-bottom: 0.5em;
+}
+
+.prose h3 {
+  font-size: 1.5em;
+}
+
+.prose h4 {
+  font-size: 1.25em;
+}
+
+.prose p {
+  margin-bottom: 1em;
+  line-height: 1.75;
+}
+
+.prose ul,
+.prose ol {
+  margin-bottom: 1em;
+  padding-left: 1.5em;
+}
+
+.prose li {
+  margin-bottom: 0.5em;
+}
+
+.prose blockquote {
+  border-left: 4px solid #a855f7;
+  padding-left: 1em;
+  margin: 1.5em 0;
+  font-style: italic;
+  color: #d1d5db;
+}
+
+.prose code {
+  background-color: #1f2937;
+  color: #f3f4f6;
+  padding: 0.125em 0.25em;
+  border-radius: 0.25em;
+  font-size: 0.875em;
+}
+
+.prose pre {
+  background-color: #1f2937;
+  color: #f3f4f6;
+  padding: 1em;
+  border-radius: 0.5em;
+  overflow-x: auto;
+  margin: 1.5em 0;
+}
+
+.prose pre code {
+  background-color: transparent;
+  padding: 0;
+  color: inherit;
+}
+
+.prose a {
+  color: #a855f7;
+  text-decoration: underline;
+}
+
+.prose a:hover {
+  color: #c084fc;
+}
+
+.prose strong {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.prose em {
+  font-style: italic;
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5em 0;
+}
+
+.prose th,
+.prose td {
+  border: 1px solid #374151;
+  padding: 0.5em;
+  text-align: left;
+}
+
+.prose th {
+  background-color: #1f2937;
+  font-weight: 600;
+}
+
+.prose img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5em;
+  margin: 1.5em 0;
+}
+
+.prose hr {
+  border: none;
+  border-top: 1px solid #374151;
+  margin: 2em 0;
 }

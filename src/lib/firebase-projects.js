@@ -1,4 +1,4 @@
-// Firebase Blog Posts Service
+// Firebase Projects Service
 import { 
   getFirestore, 
   collection, 
@@ -15,43 +15,43 @@ import {
 import app from "./firebase";
 
 const db = getFirestore(app);
-const POSTS_COLLECTION = "blog_posts";
+const PROJECTS_COLLECTION = "projects";
 
-// Create a new blog post
-export const createBlogPost = async (postData) => {
+// Create a new project
+export const createProject = async (projectData) => {
   try {
-    const docRef = await addDoc(collection(db, POSTS_COLLECTION), {
-      ...postData,
+    const docRef = await addDoc(collection(db, PROJECTS_COLLECTION), {
+      ...projectData,
       createdAt: new Date(),
       updatedAt: new Date(),
       published: true
     });
     
-    console.log("Blog post created with ID:", docRef.id);
+    console.log("Project created with ID:", docRef.id);
     return docRef.id;
   } catch (error) {
-    console.error("Error creating blog post:", error);
+    console.error("Error creating project:", error);
     throw error;
   }
 };
 
-// Get all blog posts
-export const getAllBlogPosts = async () => {
+// Get all projects
+export const getAllProjects = async () => {
   try {
-    console.log('Fetching all blog posts from Firebase...');
+    console.log('Fetching all projects from Firebase...');
     
     const q = query(
-      collection(db, POSTS_COLLECTION), 
+      collection(db, PROJECTS_COLLECTION), 
       where("published", "==", true),
       orderBy("createdAt", "desc")
     );
     
     const querySnapshot = await getDocs(q);
-    const posts = [];
+    const projects = [];
     
     querySnapshot.forEach((doc) => {
       const data = doc.data();
-      posts.push({
+      projects.push({
         id: doc.id,
         ...data,
         // Convert Firestore timestamps to readable dates
@@ -60,10 +60,10 @@ export const getAllBlogPosts = async () => {
       });
     });
     
-    console.log(`Successfully fetched ${posts.length} blog posts`);
-    return posts;
+    console.log(`Successfully fetched ${projects.length} projects`);
+    return projects;
   } catch (error) {
-    console.error("Error getting blog posts:", error);
+    console.error("Error getting projects:", error);
     console.error("Error details:", {
       code: error.code,
       message: error.message,
@@ -73,13 +73,13 @@ export const getAllBlogPosts = async () => {
   }
 };
 
-// Get a single blog post by slug
-export const getBlogPostBySlug = async (slug) => {
+// Get a single project by slug
+export const getProjectBySlug = async (slug) => {
   try {
-    console.log(`Fetching blog post with slug: ${slug}`);
+    console.log(`Fetching project with slug: ${slug}`);
     
     const q = query(
-      collection(db, POSTS_COLLECTION), 
+      collection(db, PROJECTS_COLLECTION), 
       where("slug", "==", slug),
       where("published", "==", true)
     );
@@ -87,14 +87,14 @@ export const getBlogPostBySlug = async (slug) => {
     const querySnapshot = await getDocs(q);
     
     if (querySnapshot.empty) {
-      console.log(`No blog post found with slug: ${slug}`);
+      console.log(`No project found with slug: ${slug}`);
       return null;
     }
     
     const doc = querySnapshot.docs[0];
     const data = doc.data();
     
-    console.log(`Successfully fetched blog post: ${data.title}`);
+    console.log(`Successfully fetched project: ${data.title}`);
     
     return {
       id: doc.id,
@@ -103,7 +103,7 @@ export const getBlogPostBySlug = async (slug) => {
       updatedAt: data.updatedAt?.toDate()
     };
   } catch (error) {
-    console.error("Error getting blog post by slug:", error);
+    console.error("Error getting project by slug:", error);
     console.error("Error details:", {
       code: error.code,
       message: error.message,
@@ -113,10 +113,10 @@ export const getBlogPostBySlug = async (slug) => {
   }
 };
 
-// Get a single blog post by ID
-export const getBlogPostById = async (postId) => {
+// Get a single project by ID
+export const getProjectById = async (projectId) => {
   try {
-    const docRef = doc(db, POSTS_COLLECTION, postId);
+    const docRef = doc(db, PROJECTS_COLLECTION, projectId);
     const docSnap = await getDoc(docRef);
     
     if (docSnap.exists()) {
@@ -131,57 +131,57 @@ export const getBlogPostById = async (postId) => {
       return null;
     }
   } catch (error) {
-    console.error("Error getting blog post by ID:", error);
+    console.error("Error getting project by ID:", error);
     throw error;
   }
 };
 
-// Update a blog post
-export const updateBlogPost = async (postId, updateData) => {
+// Update a project
+export const updateProject = async (projectId, updateData) => {
   try {
-    const docRef = doc(db, POSTS_COLLECTION, postId);
+    const docRef = doc(db, PROJECTS_COLLECTION, projectId);
     await updateDoc(docRef, {
       ...updateData,
       updatedAt: new Date()
     });
     
-    console.log("Blog post updated successfully");
+    console.log("Project updated successfully");
   } catch (error) {
-    console.error("Error updating blog post:", error);
+    console.error("Error updating project:", error);
     throw error;
   }
 };
 
-// Delete a blog post
-export const deleteBlogPost = async (postId) => {
+// Delete a project
+export const deleteProject = async (projectId) => {
   try {
-    await deleteDoc(doc(db, POSTS_COLLECTION, postId));
-    console.log("Blog post deleted successfully");
+    await deleteDoc(doc(db, PROJECTS_COLLECTION, projectId));
+    console.log("Project deleted successfully");
   } catch (error) {
-    console.error("Error deleting blog post:", error);
+    console.error("Error deleting project:", error);
     throw error;
   }
 };
 
-// Get recent blog posts (for homepage, etc.)
-export const getRecentBlogPosts = async (count = 3) => {
+// Get recent projects (for homepage, etc.)
+export const getRecentProjects = async (count = 3) => {
   try {
-    console.log(`Fetching ${count} recent blog posts from Firebase...`);
+    console.log(`Fetching ${count} recent projects from Firebase...`);
     
     const q = query(
-      collection(db, POSTS_COLLECTION),
+      collection(db, PROJECTS_COLLECTION),
       where("published", "==", true),
       orderBy("createdAt", "desc")
     );
     
     const querySnapshot = await getDocs(q);
-    const posts = [];
+    const projects = [];
     
     let i = 0;
     querySnapshot.forEach((doc) => {
       if (i < count) {
         const data = doc.data();
-        posts.push({
+        projects.push({
           id: doc.id,
           ...data,
           createdAt: data.createdAt?.toDate(),
@@ -191,10 +191,10 @@ export const getRecentBlogPosts = async (count = 3) => {
       }
     });
     
-    console.log(`Successfully fetched ${posts.length} recent blog posts`);
-    return posts;
+    console.log(`Successfully fetched ${projects.length} recent projects`);
+    return projects;
   } catch (error) {
-    console.error("Error getting recent blog posts:", error);
+    console.error("Error getting recent projects:", error);
     console.error("Error details:", {
       code: error.code,
       message: error.message,
@@ -205,7 +205,7 @@ export const getRecentBlogPosts = async (count = 3) => {
 };
 
 // Helper function to format dates for display
-export const formatPostDate = (date) => {
+export const formatProjectDate = (date) => {
   if (!date) return "Unknown date";
   
   return date.toLocaleDateString("en-US", {
@@ -214,8 +214,8 @@ export const formatPostDate = (date) => {
   });
 };
 
-// Helper function to format dates for admin and individual blog posts (full format)
-export const formatPostDateFull = (date) => {
+// Helper function to format dates for admin (full format)
+export const formatProjectDateFull = (date) => {
   if (!date) return "Unknown date";
   
   return date.toLocaleDateString("en-US", {
@@ -226,35 +226,8 @@ export const formatPostDateFull = (date) => {
   });
 };
 
-// Helper function to get just the day number
-export const getPostDay = (date) => {
-  if (!date) return "?";
-  return date.getDate();
-};
-
-// Helper function to format month and year for blog listing
-export const formatPostMonthYear = (date) => {
-  if (!date) return "Unknown";
-  
-  return date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short"
-  });
-};
-
-// Helper function to format date for homepage (Month Day, Year)
-export const formatPostDateHomepage = (date) => {
-  if (!date) return "Unknown date";
-  
-  return date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric"
-  });
-};
-
 // Helper function to generate slug from title
-export const generateSlug = (title) => {
+export const generateProjectSlug = (title) => {
   return title
     .toLowerCase()
     .replace(/[^a-z0-9 -]/g, '') // Remove special characters
@@ -264,20 +237,17 @@ export const generateSlug = (title) => {
 };
 
 export { db };
-const firebaseBlogService = {
-  createBlogPost,
-  getAllBlogPosts,
-  getBlogPostBySlug,
-  getBlogPostById,
-  updateBlogPost,
-  deleteBlogPost,
-  getRecentBlogPosts,
-  formatPostDate,
-  formatPostDateFull,
-  getPostDay,
-  formatPostMonthYear,
-  formatPostDateHomepage,
-  generateSlug
+const firebaseProjectService = {
+  createProject,
+  getAllProjects,
+  getProjectBySlug,
+  getProjectById,
+  updateProject,
+  deleteProject,
+  getRecentProjects,
+  formatProjectDate,
+  formatProjectDateFull,
+  generateProjectSlug
 };
 
-export default firebaseBlogService;
+export default firebaseProjectService;

@@ -1,6 +1,9 @@
 // Imports
-import { getAllBlogPosts, getBlogPostBySlug, formatPostDate } from '../../../lib/firebase-blog';
+import { getAllBlogPosts, getBlogPostBySlug, formatPostDateFull } from '../../../lib/firebase-blog';
 import Navigation from '../../../components/Navigation';
+import ProfileCard from '../../../components/ProfileCard';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 // Force dynamic rendering - no caching
 export const dynamic = 'force-dynamic';
@@ -61,13 +64,11 @@ export default async function BlogPost({ params }) {
             
             {/* Post metadata */}
             <div className="flex items-center text-gray-400 text-sm mb-6">
-              <span>{formatPostDate(post.createdAt)}</span>
-              <span className="mx-2">•</span>
-              <span>{post.readTime}</span>
+              <span>{formatPostDateFull(post.createdAt)}</span>
               {post.author && (
                 <>
                   <span className="mx-2">•</span>
-                  <span>by {post.author}</span>
+                  <span>{post.author}</span>
                 </>
               )}
             </div>
@@ -79,12 +80,16 @@ export default async function BlogPost({ params }) {
           </header>
 
           {/* Post content */}
-          <div className="prose prose-invert max-w-none">
-            <div 
-              className="text-gray-300 leading-relaxed"
-              dangerouslySetInnerHTML={{ __html: post.content }}
-            />
+          <div className="prose prose-invert max-w-none text-gray-300 leading-relaxed">
+            <ReactMarkdown 
+              remarkPlugins={[remarkGfm]}
+            >
+              {post.content}
+            </ReactMarkdown>
           </div>
+          
+          {/* Profile Card */}
+          <ProfileCard />
         </article>
       </div>
     </div>

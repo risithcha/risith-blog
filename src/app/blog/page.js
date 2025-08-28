@@ -1,7 +1,7 @@
 // Imports
 import Link from 'next/link';
 import Navigation from '../../components/Navigation';
-import { getAllBlogPosts, formatPostDate } from '../../lib/firebase-blog';
+import { getAllBlogPosts, getPostDay, formatPostMonthYear } from '../../lib/firebase-blog';
 
 // Force dynamic rendering - no caching
 export const dynamic = 'force-dynamic';
@@ -42,20 +42,26 @@ export default async function BlogPage() {
           {/* Loop through all posts */}
           <div className="space-y-8">
             {posts.map((post, index) => (
-              <article key={post.id} className="border-b border-gray-800 pb-8">
-                {/* Post title */}
-                <h2 className="text-2xl font-semibold mb-3 hover:text-purple-300 cursor-pointer">
-                  <Link href={`/blog/${post.slug}`}>{post.title}</Link>
-                </h2>
+              <article key={post.id} className="flex items-start space-x-6">
+                {/* Date section - large day number */}
+                <div className="flex flex-col items-center min-w-[60px]">
+                  <div className="text-3xl font-bold text-gray-300">
+                    {getPostDay(post.createdAt)}
+                  </div>
+                  <div className="text-sm text-gray-500">
+                    {formatPostMonthYear(post.createdAt)}
+                  </div>
+                </div>
                 
-                {/* Post excerpt */}
-                <p className="text-gray-400 mb-4">{post.excerpt}</p>
-                
-                {/* Post metadata */}
-                <div className="text-gray-500 text-xs">
-                  <span>{formatPostDate(post.createdAt)}</span>
-                  <span className="mx-2">•</span>
-                  <span>{post.readTime}</span>
+                {/* Content section */}
+                <div className="flex-1">
+                  {/* Post title */}
+                  <h2 className="text-xl font-semibold mb-2 hover:text-purple-300 cursor-pointer">
+                    <Link href={`/blog/${post.slug}`}>{post.title}</Link>
+                  </h2>
+                  
+                  {/* Post excerpt */}
+                  <p className="text-gray-400 text-sm">{post.excerpt}</p>
                 </div>
               </article>
             ))}

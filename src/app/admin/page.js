@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import BlogAdmin from '../../components/BlogAdmin';
+import ProjectsAdmin from '../../components/ProjectsAdmin';
+import ProfileAdmin from '../../components/ProfileAdmin';
 import LoginForm from '../../components/LoginForm';
 import Navigation from '../../components/Navigation';
 import { AuthProvider, useAuth } from '../../components/AuthContext';
@@ -10,6 +12,7 @@ import { logOut } from '../../lib/firebase-auth';
 function AdminContent() {
   const { user, isAuthenticated, loading } = useAuth();
   const [showLogin, setShowLogin] = useState(false);
+  const [activeTab, setActiveTab] = useState('blog'); // 'blog', 'projects', or 'profile'
 
   const handleLoginSuccess = () => {
     setShowLogin(false);
@@ -36,7 +39,7 @@ function AdminContent() {
       <div className="min-h-screen bg-black text-white">
         <Navigation />
         <div className="max-w-4xl mx-auto px-6 py-16">
-          <h1 className="text-3xl font-bold mb-8 text-center">Blog Control</h1>
+          <h1 className="text-3xl font-bold mb-8 text-center">Admin Control</h1>
           <LoginForm onLoginSuccess={handleLoginSuccess} />
         </div>
       </div>
@@ -48,7 +51,7 @@ function AdminContent() {
       <Navigation />
       <div className="max-w-4xl mx-auto px-6 py-16">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">Blog Control</h1>
+          <h1 className="text-3xl font-bold">Admin Control</h1>
           <div className="flex items-center space-x-4">
             <span className="text-gray-400">Welcome Risith</span>
             <button
@@ -59,7 +62,45 @@ function AdminContent() {
             </button>
           </div>
         </div>
-        <BlogAdmin />
+        
+        {/* Tab Navigation */}
+        <div className="flex gap-4 mb-6 justify-center">
+          <button
+            onClick={() => setActiveTab('blog')}
+            className={`px-6 py-3 rounded font-medium transition-colors ${
+              activeTab === 'blog' 
+                ? 'bg-teal-700 text-white shadow-lg' 
+                : 'bg-gray-600 text-gray-300 hover:bg-gray-500 hover:text-white'
+            }`}
+          >
+            Blog Posts
+          </button>
+          <button
+            onClick={() => setActiveTab('projects')}
+            className={`px-6 py-3 rounded font-medium transition-colors ${
+              activeTab === 'projects' 
+                ? 'bg-teal-700 text-white shadow-lg' 
+                : 'bg-gray-600 text-gray-300 hover:bg-gray-500 hover:text-white'
+            }`}
+          >
+            Projects
+          </button>
+          <button
+            onClick={() => setActiveTab('profile')}
+            className={`px-6 py-3 rounded font-medium transition-colors ${
+              activeTab === 'profile' 
+                ? 'bg-teal-700 text-white shadow-lg' 
+                : 'bg-gray-600 text-gray-300 hover:bg-gray-500 hover:text-white'
+            }`}
+          >
+            Profile
+          </button>
+        </div>
+        
+        {/* Tab Content */}
+        {activeTab === 'blog' && <BlogAdmin />}
+        {activeTab === 'projects' && <ProjectsAdmin />}
+        {activeTab === 'profile' && <ProfileAdmin />}
       </div>
     </div>
   );
