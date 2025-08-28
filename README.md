@@ -10,3 +10,7 @@
 
 ![Blog Screenshot](https://i.postimg.cc/d3YDNbdg/Blog-Screenshot.png)
 </div>
+
+## Copyright:
+
+All rights reserved. 
