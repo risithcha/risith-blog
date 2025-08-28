@@ -12,7 +12,7 @@ export default function Footer() {
         {/* "Copyright" stuff */}
         <div className="text-center text-gray-500 text-xs">
           2025 © Risith | Made by <a 
-            href="https://github.com/risithcha/risith-blog" 
+            href="https://risithcha.com/admin" 
             className="hover:text-white transition-colors" 
             target="_blank" 
             rel="noopener noreferrer"

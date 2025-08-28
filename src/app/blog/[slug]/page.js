@@ -1,21 +1,36 @@
 // Imports
-import { getPostBySlug, blogPosts } from '../../../data/posts';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Navigation from '../../../components/Navigation';
+import { getBlogPostBySlug, getAllBlogPosts, formatPostDate } from '../../../lib/firebase-blog';
 
 // Generate pages on build so they render faster
 export async function generateStaticParams() {
-  return blogPosts.map((post) => ({
-    slug: post.slug,
-  }));
+  try {
+    const posts = await getAllBlogPosts();
+    return posts.map((post) => ({
+      slug: post.slug,
+    }));
+  } catch (error) {
+    console.error('Error generating static params:', error);
+    return [];
+  }
 }
 
 // Blog post page component
 // Displays a single blog post based on the slug parameter
-export default function BlogPost({ params }) {
+export default async function BlogPost({ params }) {
+  // Await params as required by Next.js 15
+  const { slug } = await params;
+  
   // Get the specific post data using the slug from URL parameters
-  const post = getPostBySlug(params.slug);
+  let post = null;
+  
+  try {
+    post = await getBlogPostBySlug(slug);
+  } catch (error) {
+    console.error('Error fetching blog post:', error);
+  }
   
   // If post doesn't exist, show 404 page
   if (!post) {
@@ -36,9 +51,15 @@ export default function BlogPost({ params }) {
             <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
             {/* Post Metadata (date and read time) */}
             <div className="flex items-center text-gray-400 text-sm mb-6">
-              <span>{post.date}</span>
+              <span>{post.originalDate || formatPostDate(post.createdAt)}</span>
               <span className="mx-2">•</span>
               <span>{post.readTime}</span>
+              {post.author && (
+                <>
+                  <span className="mx-2">•</span>
+                  <span>by {post.author}</span>
+                </>
+              )}
             </div>
           </div>
           

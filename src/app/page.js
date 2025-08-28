@@ -1,13 +1,18 @@
 // Imports
-import { getRecentPosts } from '../data/posts';
+import { getRecentBlogPosts } from '../lib/firebase-blog';
 import Image from 'next/image';
 import Link from 'next/link';
 import Navigation from '../components/Navigation';
 
 // Homepage stuff
-export default function Home() {
-  // Get the 3 most recent blog posts to display
-  const recentPosts = getRecentPosts(3);
+export default async function Home() {
+  // Get the 3 most recent blog posts from Firebase
+  let recentPosts = [];
+  try {
+    recentPosts = await getRecentBlogPosts(3);
+  } catch (error) {
+    console.error('Error fetching recent posts:', error);
+  }
   
   return (
     <div className="min-h-screen bg-black text-white flex flex-col">
@@ -44,17 +49,24 @@ export default function Home() {
           {/* Title and link to all blogs */}
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-xl font-semibold">RECENT BLOGS</h2>
-            <Link href="/blog" className="text-purple-400 text-sm hover:text-purple-300">ALL BLOGS →</Link>
+            <Link href="/blog" className="text-purple-400 text-sm hover:text-purple-300">ALL BLOGS</Link>
           </div>
           
           {/* Recent blog posts list */}
           <div className="space-y-6">
+            {/* Show message if no posts */}
+            {recentPosts.length === 0 && (
+              <div className="text-gray-400 text-center py-8">
+                No blog posts yet. Check back later!
+              </div>
+            )}
+            
             {/* Loop through recent posts */}
-            {recentPosts.map((post) => (
+            {recentPosts.map((post, index) => (
               <div key={post.id} className="flex items-start space-x-6">
                 {/* Post number */}
                 <div className="text-6xl font-bold text-white w-20 text-center">
-                  {post.id}
+                  {index + 1}
                 </div>
                 {/* Post content */}
                 <div className="flex-1">
@@ -66,7 +78,7 @@ export default function Home() {
                   <p className="text-gray-400 text-sm mb-2">{post.excerpt}</p>
                   {/* Post date and read time */}
                   <div className="text-gray-500 text-xs">
-                    <span>{post.date}</span>
+                    <span>{post.originalDate || new Date(post.createdAt).toLocaleDateString()}</span>
                     <span className="mx-2">•</span>
                     <span>{post.readTime}</span>
                   </div>

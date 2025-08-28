@@ -7,13 +7,13 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "build:css": "tailwindcss --input ./src/input.css --output ./src/app/globals.css"
+    "lint": "next lint"
   },
   "dependencies": {
     "@tailwindcss/cli": "^4.1.12",
     "@tailwindcss/postcss": "^4.1.12",
     "autoprefixer": "^10.4.21",
+    "firebase": "^12.1.0",
     "next": "^15.5.1",
     "postcss": "^8.5.6",
     "react": "^19.1.1",
