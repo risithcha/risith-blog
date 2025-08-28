@@ -51,7 +51,7 @@ export default async function BlogPost({ params }) {
             <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
             {/* Post Metadata (date and read time) */}
             <div className="flex items-center text-gray-400 text-sm mb-6">
-              <span>{post.originalDate || formatPostDate(post.createdAt)}</span>
+              <span>{formatPostDate(post.createdAt)}</span>
               <span className="mx-2">•</span>
               <span>{post.readTime}</span>
               {post.author && (

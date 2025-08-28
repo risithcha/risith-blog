@@ -1,5 +1,5 @@
 // Imports
-import { getRecentBlogPosts } from '../lib/firebase-blog';
+import { getRecentBlogPosts, formatPostDate } from '../lib/firebase-blog';
 import Image from 'next/image';
 import Link from 'next/link';
 import Navigation from '../components/Navigation';
@@ -78,7 +78,7 @@ export default async function Home() {
                   <p className="text-gray-400 text-sm mb-2">{post.excerpt}</p>
                   {/* Post date and read time */}
                   <div className="text-gray-500 text-xs">
-                    <span>{post.originalDate || new Date(post.createdAt).toLocaleDateString()}</span>
+                    <span>{formatPostDate(post.createdAt)}</span>
                     <span className="mx-2">•</span>
                     <span>{post.readTime}</span>
                   </div>

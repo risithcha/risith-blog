@@ -64,7 +64,7 @@ export default async function BlogPage() {
                   <p className="text-gray-400 text-sm mb-2">{post.excerpt}</p>
                   {/* Post metadata (date and read time) */}
                   <div className="text-gray-500 text-xs">
-                    <span>{post.originalDate || formatPostDate(post.createdAt)}</span>
+                    <span>{formatPostDate(post.createdAt)}</span>
                     <span className="mx-2">•</span>
                     <span>{post.readTime}</span>
                   </div>
