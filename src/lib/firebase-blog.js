@@ -225,7 +225,7 @@ export const generateSlug = (title) => {
 };
 
 export { db };
-export default {
+const firebaseBlogService = {
   createBlogPost,
   getAllBlogPosts,
   getBlogPostBySlug,
@@ -236,3 +236,5 @@ export default {
   formatPostDate,
   generateSlug
 };
+
+export default firebaseBlogService;

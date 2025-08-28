@@ -40,7 +40,7 @@ export default async function BlogPost({ params }) {
         <Navigation />
         <div className="flex-1 max-w-4xl mx-auto px-6 w-full py-16">
           <h1 className="text-3xl font-bold mb-4">Post Not Found</h1>
-          <p className="text-gray-400">The blog post you're looking for doesn't exist.</p>
+          <p className="text-gray-400">The blog post you&apos;re looking for doesn&apos;t exist.</p>
         </div>
       </div>
     );
