@@ -1,5 +1,6 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
+@custom-variant dark (&:where(.dark, .dark *));
 
 @layer base {
   * {
@@ -15,80 +16,78 @@
   }
 
   body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
     min-height: 100vh;
-    font-family: var(--font-family-sans);
     line-height: 1.6;
   }
 }
 
-/* Custom styles for markdown editor */
-[data-color-mode*='dark'] {
-  --color-canvas-default: #000000;
-  --color-canvas-subtle: #000000;
-  --color-border-default: #374151;
-  --color-border-muted: #374151;
-  --color-neutral-muted: #374151;
-  --color-accent-fg: #a855f7;
-  --color-accent-emphasis: #a855f7;
-  --color-attention-subtle: #a855f7;
-  --color-danger-subtle: #ef4444;
+/* Force markdown editor background to match site theme */
+.markdown-editor,
+.markdown-editor .rc-md-editor,
+.rc-md-editor {
+  background: #fff !important;
+  color: #1f2937 !important;
+}
+.dark .markdown-editor,
+.dark .markdown-editor .rc-md-editor,
+.dark .rc-md-editor {
+  background: #18181b !important;
+  color: #f3f4f6 !important;
 }
 
-/* Prose styles for markdown preview */
-.prose {
+/* Prose styles for markdown preview - Dark mode */
+.dark .prose {
   color: #ffffff;
 }
 
-.prose h1,
-.prose h2,
-.prose h3,
-.prose h4,
-.prose h5,
-.prose h6 {
+.dark .prose h1,
+.dark .prose h2,
+.dark .prose h3,
+.dark .prose h4,
+.dark .prose h5,
+.dark .prose h6 {
   color: #ffffff;
   font-weight: 600;
   margin-top: 1.5em;
   margin-bottom: 0.5em;
 }
 
-.prose h1 {
+.dark .prose h1 {
   font-size: 2.25em;
   border-bottom: 1px solid #374151;
   padding-bottom: 0.5em;
 }
 
-.prose h2 {
+.dark .prose h2 {
   font-size: 1.875em;
   border-bottom: 1px solid #374151;
   padding-bottom: 0.5em;
 }
 
-.prose h3 {
+.dark .prose h3 {
   font-size: 1.5em;
 }
 
-.prose h4 {
+.dark .prose h4 {
   font-size: 1.25em;
 }
 
-.prose p {
+.dark .prose p {
   margin-bottom: 1em;
   line-height: 1.75;
 }
 
-.prose ul,
-.prose ol {
+.dark .prose ul,
+.dark .prose ol {
   margin-bottom: 1em;
   padding-left: 1.5em;
 }
 
-.prose li {
+.dark .prose li {
   margin-bottom: 0.5em;
 }
 
-.prose blockquote {
+.dark .prose blockquote {
   border-left: 4px solid #a855f7;
   padding-left: 1em;
   margin: 1.5em 0;
@@ -96,7 +95,7 @@
   color: #d1d5db;
 }
 
-.prose code {
+.dark .prose code {
   background-color: #1f2937;
   color: #f3f4f6;
   padding: 0.125em 0.25em;
@@ -104,7 +103,7 @@
   font-size: 0.875em;
 }
 
-.prose pre {
+.dark .prose pre {
   background-color: #1f2937;
   color: #f3f4f6;
   padding: 1em;
@@ -113,31 +112,31 @@
   margin: 1.5em 0;
 }
 
-.prose pre code {
+.dark .prose pre code {
   background-color: transparent;
   padding: 0;
   color: inherit;
 }
 
-.prose a {
+.dark .prose a {
   color: #a855f7;
   text-decoration: underline;
 }
 
-.prose a:hover {
+.dark .prose a:hover {
   color: #c084fc;
 }
 
-.prose strong {
+.dark .prose strong {
   font-weight: 600;
   color: #ffffff;
 }
 
-.prose em {
+.dark .prose em {
   font-style: italic;
 }
 
-.prose table {
+.dark .prose table {
   width: 100%;
   border-collapse: collapse;
   margin: 1.5em 0;
@@ -166,4 +165,116 @@
   border: none;
   border-top: 1px solid #374151;
   margin: 2em 0;
+}
+
+/* Prose styles for markdown preview - Light mode */
+.prose {
+  color: #1f2937;
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+  color: #111827;
+  font-weight: 600;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.prose h1 {
+  font-size: 2.25em;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 0.5em;
+}
+
+.prose h2 {
+  font-size: 1.875em;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 0.5em;
+}
+
+.prose h3 {
+  font-size: 1.5em;
+}
+
+.prose h4 {
+  font-size: 1.25em;
+}
+
+.prose p {
+  margin-bottom: 1em;
+  line-height: 1.75;
+}
+
+.prose ul,
+.prose ol {
+  margin-bottom: 1em;
+  padding-left: 1.5em;
+}
+
+.prose li {
+  margin-bottom: 0.5em;
+}
+
+.prose blockquote {
+  border-left: 4px solid #7c3aed;
+  padding-left: 1em;
+  margin: 1.5em 0;
+  font-style: italic;
+  color: #4b5563;
+}
+
+.prose code {
+  background-color: #f3f4f6;
+  color: #1f2937;
+  padding: 0.125em 0.25em;
+  border-radius: 0.25em;
+  font-size: 0.875em;
+}
+
+.prose pre {
+  background-color: #f3f4f6;
+  color: #1f2937;
+  padding: 1em;
+  border-radius: 0.5em;
+  overflow-x: auto;
+  margin: 1.5em 0;
+}
+
+.prose pre code {
+  background-color: transparent;
+  padding: 0;
+  color: inherit;
+}
+
+.prose a {
+  color: #7c3aed;
+  text-decoration: underline;
+}
+
+.prose a:hover {
+  color: #6d28d9;
+}
+
+.prose strong {
+  font-weight: 600;
+  color: #111827;
+}
+
+.prose em {
+  font-style: italic;
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5em 0;
+}
+
+.prose th {
+  background-color: #f9fafb;
+  font-weight: 600;
 }

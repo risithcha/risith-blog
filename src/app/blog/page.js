@@ -2,7 +2,11 @@
 import Link from 'next/link';
 import PageLayout from '../../components/PageLayout';
 import ContentContainer from '../../components/ContentContainer';
-import { getAllBlogPosts, getPostDay, formatPostMonthYear } from '../../lib/firebase-blog';
+import {
+  getAllBlogPosts,
+  getPostDay,
+  formatPostMonthYear,
+} from '../../lib/firebase-blog';
 
 // Force dynamic rendering - no caching
 export const dynamic = 'force-dynamic';
@@ -23,42 +27,48 @@ export default async function BlogPage() {
       <ContentContainer>
         {/* Header */}
         <div className="py-16">
-          <h1 className="text-3xl font-bold mb-4">ALL BLOGS</h1>
-          <p className="text-gray-400">All my blog posts in one place.</p>
+          <h1 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
+            ALL BLOGS
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400">
+            All my blog posts in one place.
+          </p>
         </div>
 
         {/* Blog Posts List */}
         <div className="pb-16">
           {/* Show message if no posts */}
           {posts.length === 0 && (
-            <div className="text-gray-400 text-center py-8">
+            <div className="text-gray-600 dark:text-gray-400 text-center py-8">
               No blog posts yet. Check back later!
             </div>
           )}
-          
+
           {/* Loop through all posts */}
           <div className="space-y-8">
             {posts.map((post, index) => (
               <article key={post.id} className="flex items-start space-x-6">
                 {/* Date section - large day number and month/year */}
                 <div className="flex flex-col items-center min-w-[60px]">
-                  <div className="text-3xl font-bold text-gray-300">
+                  <div className="text-3xl font-bold text-gray-700 dark:text-gray-300">
                     {getPostDay(post.createdAt)}
                   </div>
-                  <div className="text-sm text-gray-500">
+                  <div className="text-sm text-gray-500 dark:text-gray-500">
                     {formatPostMonthYear(post.createdAt)}
                   </div>
                 </div>
-                
+
                 {/* Content section */}
                 <div className="flex-1">
                   {/* Post title */}
-                  <h2 className="text-xl font-semibold mb-2 hover:text-purple-300 cursor-pointer">
+                  <h2 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white hover:text-purple-600 dark:hover:text-purple-300 cursor-pointer">
                     <Link href={`/blog/${post.slug}`}>{post.title}</Link>
                   </h2>
-                  
+
                   {/* Post excerpt */}
-                  <p className="text-gray-400 text-sm">{post.excerpt}</p>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm">
+                    {post.excerpt}
+                  </p>
                 </div>
               </article>
             ))}

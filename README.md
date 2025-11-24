@@ -29,11 +29,13 @@ Open [http://localhost:3000](http://localhost:3000) to view the page.
 ## Project Structure
 
 Main code lives in `src/`:
+
 - `src/app/` — Next.js app routes and pages
 - `src/components/` — UI components and layout
 - `src/lib/` — Firebase services and utilities
 
 ## Code License
+
 This repository is licensed through the `GNU AFFERO GENERAL PUBLIC LICENSE`. More details are listed [here](https://github.com/risithcha/risith-blog/blob/main/LICENSE).
 
 ```

@@ -2,7 +2,15 @@
 
 // Imports
 import { useState, useEffect } from 'react';
-import { createProject, generateProjectSlug, getAllProjects, getProjectById, updateProject, deleteProject, formatProjectDateFull } from '../lib/firebase-projects';
+import {
+  createProject,
+  generateProjectSlug,
+  getAllProjects,
+  getProjectById,
+  updateProject,
+  deleteProject,
+  formatProjectDateFull,
+} from '../lib/firebase-projects';
 import PrimaryButton from './PrimaryButton';
 
 // Admin panel stuff for creating, viewing, editing, and deleting projects
@@ -21,7 +29,7 @@ export default function ProjectsAdmin() {
     githubUrl: '',
     githubLabel: 'GitHub',
     liveUrl: '',
-    liveLabel: 'Live Demo'
+    liveLabel: 'Live Demo',
   });
   // List of all existing projects
   const [projects, setProjects] = useState([]);
@@ -54,10 +62,13 @@ export default function ProjectsAdmin() {
     try {
       const projectData = {
         ...newProject,
-        tech: newProject.tech.split(',').map(t => t.trim()).filter(Boolean),
+        tech: newProject.tech
+          .split(',')
+          .map((t) => t.trim())
+          .filter(Boolean),
         slug: generateProjectSlug(newProject.title),
         published: true,
-        author: 'Risith'
+        author: 'Risith',
       };
       const projectId = await createProject(projectData);
       setMessage(`New project created successfully! ID: ${projectId}`);
@@ -69,7 +80,7 @@ export default function ProjectsAdmin() {
         githubUrl: '',
         githubLabel: 'GitHub',
         liveUrl: '',
-        liveLabel: 'Live Demo'
+        liveLabel: 'Live Demo',
       });
       await loadProjects();
       setView('list');
@@ -89,8 +100,11 @@ export default function ProjectsAdmin() {
     try {
       const updateData = {
         ...editingProject,
-        tech: editingProject.tech.split(',').map(t => t.trim()).filter(Boolean),
-        slug: generateProjectSlug(editingProject.title)
+        tech: editingProject.tech
+          .split(',')
+          .map((t) => t.trim())
+          .filter(Boolean),
+        slug: generateProjectSlug(editingProject.title),
       };
       await updateProject(editingProject.id, updateData);
       setMessage(`Project updated successfully!`);
@@ -113,12 +127,14 @@ export default function ProjectsAdmin() {
           id: project.id,
           title: project.title || '',
           description: project.description || '',
-          tech: Array.isArray(project.tech) ? project.tech.join(', ') : (project.tech || ''),
+          tech: Array.isArray(project.tech)
+            ? project.tech.join(', ')
+            : project.tech || '',
           status: project.status || 'In Progress',
           githubUrl: project.githubUrl || '',
           githubLabel: project.githubLabel || 'GitHub',
           liveUrl: project.liveUrl || '',
-          liveLabel: project.liveLabel || 'Live Demo'
+          liveLabel: project.liveLabel || 'Live Demo',
         });
         setView('edit');
       }
@@ -129,7 +145,11 @@ export default function ProjectsAdmin() {
 
   // Delete a project
   const handleDeleteProject = async (projectId) => {
-    if (!confirm('Are you sure you want to delete this project? This action cannot be undone.')) {
+    if (
+      !confirm(
+        'Are you sure you want to delete this project? This action cannot be undone.'
+      )
+    ) {
       return;
     }
 
@@ -139,7 +159,7 @@ export default function ProjectsAdmin() {
     try {
       await deleteProject(projectId);
       setMessage(`Project deleted successfully!`);
-      
+
       // Reload projects list
       await loadProjects();
     } catch (error) {
@@ -156,8 +176,8 @@ export default function ProjectsAdmin() {
         <button
           onClick={() => setView('list')}
           className={`px-4 py-2 rounded font-medium ${
-            view === 'list' 
-              ? 'bg-purple-400 text-black' 
+            view === 'list'
+              ? 'bg-purple-400 text-black'
               : 'bg-gray-700 text-white hover:bg-gray-600'
           }`}
         >
@@ -166,8 +186,8 @@ export default function ProjectsAdmin() {
         <button
           onClick={() => setView('create')}
           className={`px-4 py-2 rounded font-medium ${
-            view === 'create' 
-              ? 'bg-purple-400 text-black' 
+            view === 'create'
+              ? 'bg-purple-400 text-black'
               : 'bg-gray-700 text-white hover:bg-gray-600'
           }`}
         >
@@ -177,11 +197,13 @@ export default function ProjectsAdmin() {
 
       {/* Message Display - shows success or error messages */}
       {message && (
-        <div className={`p-3 rounded ${
-          message.includes('successfully') 
-            ? 'bg-green-900/20 border border-green-700 text-green-300' 
-            : 'bg-red-900/20 border border-red-700 text-red-300'
-        }`}>
+        <div
+          className={`p-3 rounded ${
+            message.includes('successfully')
+              ? 'bg-green-900/20 border border-green-700 text-green-300'
+              : 'bg-red-900/20 border border-red-700 text-red-300'
+          }`}
+        >
           {message}
         </div>
       )}
@@ -189,15 +211,22 @@ export default function ProjectsAdmin() {
       {/* Projects List View */}
       {view === 'list' && (
         <div className="border border-gray-700 rounded p-4">
-          <h3 className="text-lg font-semibold text-white mb-4">All Projects</h3>
+          <h3 className="text-lg font-semibold text-black dark:text-white mb-4">
+            All Projects
+          </h3>
           <div className="space-y-4">
             {projects.length === 0 ? (
               <p className="text-gray-400">No projects found.</p>
             ) : (
               projects.map((project) => (
-                <div key={project.id} className="border border-gray-600 rounded p-4">
+                <div
+                  key={project.id}
+                  className="border border-gray-600 rounded p-4"
+                >
                   <div className="flex justify-between items-start mb-2">
-                    <h4 className="text-lg font-medium text-white">{project.title}</h4>
+                    <h4 className="text-lg font-medium text-black dark:text-white">
+                      {project.title}
+                    </h4>
                     <div className="flex gap-2">
                       <button
                         onClick={() => startEdit(project.id)}
@@ -213,21 +242,28 @@ export default function ProjectsAdmin() {
                       </button>
                     </div>
                   </div>
-                  <p className="text-gray-400 text-sm mb-2">{project.description}</p>
+                  <p className="text-gray-700 dark:text-gray-400 text-sm mb-2">
+                    {project.description}
+                  </p>
                   <div className="flex flex-wrap gap-2 mb-2">
-                    {Array.isArray(project.tech) && project.tech.map((tech) => (
-                      <span 
-                        key={tech}
-                        className="px-2 py-1 bg-purple-500/20 text-purple-300 rounded text-xs"
-                      >
-                        {tech}
-                      </span>
-                    ))}
+                    {Array.isArray(project.tech) &&
+                      project.tech.map((tech) => (
+                        <span
+                          key={tech}
+                          className="px-2 py-1 bg-purple-200 dark:bg-purple-800 text-purple-800 dark:text-purple-200 rounded text-xs font-semibold shadow-sm border border-purple-300 dark:border-purple-700"
+                        >
+                          {tech}
+                        </span>
+                      ))}
                   </div>
-                  <div className="text-gray-500 text-xs">
-                    <span>Created: {formatProjectDateFull(project.createdAt)}</span>
+                  <div className="text-gray-700 dark:text-gray-400 text-xs">
+                    <span className="font-medium">
+                      Created: {formatProjectDateFull(project.createdAt)}
+                    </span>
                     <span className="mx-2">•</span>
-                    <span>Status: {project.status}</span>
+                    <span className="font-semibold text-blue-700 dark:text-blue-300">
+                      Status: {project.status}
+                    </span>
                   </div>
                 </div>
               ))
@@ -239,23 +275,64 @@ export default function ProjectsAdmin() {
       {/* Create New Project Section */}
       {view === 'create' && (
         <div className="border border-gray-700 rounded p-4">
-          <h3 className="text-lg font-semibold text-white mb-4">Create New Project</h3>
+          <h3 className="text-lg font-semibold text-black dark:text-white mb-4">
+            Create New Project
+          </h3>
           <form onSubmit={handleCreateProject} className="space-y-4">
             <div>
-              <label className="block text-gray-300 text-sm font-medium mb-1">Project Name</label>
-              <input type="text" value={newProject.title} onChange={e => setNewProject({ ...newProject, title: e.target.value })} className="w-full bg-black border border-gray-700 rounded px-3 py-2 text-white" required />
+              <label className="block text-gray-700 dark:text-gray-300 text-sm font-semibold mb-1">
+                Project Name
+              </label>
+              <input
+                type="text"
+                value={newProject.title}
+                onChange={(e) =>
+                  setNewProject({ ...newProject, title: e.target.value })
+                }
+                className="w-full bg-white dark:bg-black border border-gray-300 dark:border-gray-700 rounded px-3 py-2 text-black dark:text-white"
+                required
+              />
             </div>
             <div>
-              <label className="block text-gray-300 text-sm font-medium mb-1">Description</label>
-              <textarea value={newProject.description} onChange={e => setNewProject({ ...newProject, description: e.target.value })} rows={3} className="w-full bg-black border border-gray-700 rounded px-3 py-2 text-white" required />
+              <label className="block text-gray-700 dark:text-gray-300 text-sm font-semibold mb-1">
+                Description
+              </label>
+              <textarea
+                value={newProject.description}
+                onChange={(e) =>
+                  setNewProject({ ...newProject, description: e.target.value })
+                }
+                rows={3}
+                className="w-full bg-white dark:bg-black border border-gray-300 dark:border-gray-700 rounded px-3 py-2 text-black dark:text-white"
+                required
+              />
             </div>
             <div>
-              <label className="block text-gray-300 text-sm font-medium mb-1">Tech Stack (comma-separated)</label>
-              <input type="text" value={newProject.tech} onChange={e => setNewProject({ ...newProject, tech: e.target.value })} className="w-full bg-black border border-gray-700 rounded px-3 py-2 text-white" placeholder="e.g., React, Node.js, MongoDB" required />
+              <label className="block text-gray-700 dark:text-gray-300 text-sm font-semibold mb-1">
+                Tech Stack (comma-separated)
+              </label>
+              <input
+                type="text"
+                value={newProject.tech}
+                onChange={(e) =>
+                  setNewProject({ ...newProject, tech: e.target.value })
+                }
+                className="w-full bg-white dark:bg-black border border-gray-300 dark:border-gray-700 rounded px-3 py-2 text-black dark:text-white"
+                placeholder="e.g., React, Node.js, MongoDB"
+                required
+              />
             </div>
             <div>
-              <label className="block text-gray-300 text-sm font-medium mb-1">Status</label>
-              <select value={newProject.status} onChange={e => setNewProject({ ...newProject, status: e.target.value })} className="w-full bg-black border border-gray-700 rounded px-3 py-2 text-white">
+              <label className="block text-gray-700 dark:text-gray-300 text-sm font-semibold mb-1">
+                Status
+              </label>
+              <select
+                value={newProject.status}
+                onChange={(e) =>
+                  setNewProject({ ...newProject, status: e.target.value })
+                }
+                className="w-full bg-white dark:bg-black border border-gray-300 dark:border-gray-700 rounded px-3 py-2 text-black dark:text-white"
+              >
                 <option value="In Progress">In Progress</option>
                 <option value="Completed">Completed</option>
                 <option value="On Hold">On Hold</option>
@@ -263,22 +340,62 @@ export default function ProjectsAdmin() {
               </select>
             </div>
             <div>
-              <label className="block text-gray-300 text-sm font-medium mb-1">GitHub Link</label>
-              <input type="url" value={newProject.githubUrl} onChange={e => setNewProject({ ...newProject, githubUrl: e.target.value })} className="w-full bg-black border border-gray-700 rounded px-3 py-2 text-white" placeholder="https://github.com/username/project" />
+              <label className="block text-gray-700 dark:text-gray-300 text-sm font-semibold mb-1">
+                GitHub Link
+              </label>
+              <input
+                type="url"
+                value={newProject.githubUrl}
+                onChange={(e) =>
+                  setNewProject({ ...newProject, githubUrl: e.target.value })
+                }
+                className="w-full bg-white dark:bg-black border border-gray-300 dark:border-gray-700 rounded px-3 py-2 text-black dark:text-white"
+                placeholder="https://github.com/username/project"
+              />
             </div>
             <div>
-              <label className="block text-gray-300 text-sm font-medium mb-1">GitHub Link Label</label>
-              <input type="text" value={newProject.githubLabel} onChange={e => setNewProject({ ...newProject, githubLabel: e.target.value })} className="w-full bg-black border border-gray-700 rounded px-3 py-2 text-white" placeholder="GitHub" />
+              <label className="block text-gray-700 dark:text-gray-300 text-sm font-semibold mb-1">
+                GitHub Link Label
+              </label>
+              <input
+                type="text"
+                value={newProject.githubLabel}
+                onChange={(e) =>
+                  setNewProject({ ...newProject, githubLabel: e.target.value })
+                }
+                className="w-full bg-white dark:bg-black border border-gray-300 dark:border-gray-700 rounded px-3 py-2 text-black dark:text-white"
+                placeholder="GitHub"
+              />
             </div>
             <div>
-              <label className="block text-gray-300 text-sm font-medium mb-1">Project Link</label>
-              <input type="url" value={newProject.liveUrl} onChange={e => setNewProject({ ...newProject, liveUrl: e.target.value })} className="w-full bg-black border border-gray-700 rounded px-3 py-2 text-white" placeholder="https://project-demo.com" />
+              <label className="block text-gray-700 dark:text-gray-300 text-sm font-semibold mb-1">
+                Project Link
+              </label>
+              <input
+                type="url"
+                value={newProject.liveUrl}
+                onChange={(e) =>
+                  setNewProject({ ...newProject, liveUrl: e.target.value })
+                }
+                className="w-full bg-white dark:bg-black border border-gray-300 dark:border-gray-700 rounded px-3 py-2 text-black dark:text-white"
+                placeholder="https://project-demo.com"
+              />
             </div>
             <div>
-              <label className="block text-gray-300 text-sm font-medium mb-1">Project Link Label</label>
-              <input type="text" value={newProject.liveLabel} onChange={e => setNewProject({ ...newProject, liveLabel: e.target.value })} className="w-full bg-black border border-gray-700 rounded px-3 py-2 text-white" placeholder="Live Demo" />
+              <label className="block text-gray-700 dark:text-gray-300 text-sm font-semibold mb-1">
+                Project Link Label
+              </label>
+              <input
+                type="text"
+                value={newProject.liveLabel}
+                onChange={(e) =>
+                  setNewProject({ ...newProject, liveLabel: e.target.value })
+                }
+                className="w-full bg-white dark:bg-black border border-gray-300 dark:border-gray-700 rounded px-3 py-2 text-black dark:text-white"
+                placeholder="Live Demo"
+              />
             </div>
-            
+
             <PrimaryButton type="submit" disabled={isLoading}>
               {isLoading ? 'Creating...' : 'Create Project'}
             </PrimaryButton>
@@ -289,23 +406,73 @@ export default function ProjectsAdmin() {
       {/* Edit Project Section */}
       {view === 'edit' && editingProject && (
         <div className="border border-gray-700 rounded p-4">
-          <h3 className="text-lg font-semibold text-white mb-4">Edit Project</h3>
+          <h3 className="text-lg font-semibold text-black dark:text-white mb-4">
+            Edit Project
+          </h3>
           <form onSubmit={handleEditProject} className="space-y-4">
             <div>
-              <label className="block text-gray-300 text-sm font-medium mb-1">Project Name</label>
-              <input type="text" value={editingProject.title} onChange={e => setEditingProject({ ...editingProject, title: e.target.value })} className="w-full bg-black border border-gray-700 rounded px-3 py-2 text-white" required />
+              <label className="block text-gray-300 text-sm font-medium mb-1">
+                Project Name
+              </label>
+              <input
+                type="text"
+                value={editingProject.title}
+                onChange={(e) =>
+                  setEditingProject({
+                    ...editingProject,
+                    title: e.target.value,
+                  })
+                }
+                className="w-full bg-white dark:bg-black border border-gray-300 dark:border-gray-700 rounded px-3 py-2 text-black dark:text-white"
+                required
+              />
             </div>
             <div>
-              <label className="block text-gray-300 text-sm font-medium mb-1">Description</label>
-              <textarea value={editingProject.description} onChange={e => setEditingProject({ ...editingProject, description: e.target.value })} rows={3} className="w-full bg-black border border-gray-700 rounded px-3 py-2 text-white" required />
+              <label className="block text-gray-300 text-sm font-medium mb-1">
+                Description
+              </label>
+              <textarea
+                value={editingProject.description}
+                onChange={(e) =>
+                  setEditingProject({
+                    ...editingProject,
+                    description: e.target.value,
+                  })
+                }
+                rows={3}
+                className="w-full bg-white dark:bg-black border border-gray-300 dark:border-gray-700 rounded px-3 py-2 text-black dark:text-white"
+                required
+              />
             </div>
             <div>
-              <label className="block text-gray-300 text-sm font-medium mb-1">Tech Stack (comma-separated)</label>
-              <input type="text" value={editingProject.tech} onChange={e => setEditingProject({ ...editingProject, tech: e.target.value })} className="w-full bg-black border border-gray-700 rounded px-3 py-2 text-white" placeholder="e.g., React, Node.js, MongoDB" required />
+              <label className="block text-gray-300 text-sm font-medium mb-1">
+                Tech Stack (comma-separated)
+              </label>
+              <input
+                type="text"
+                value={editingProject.tech}
+                onChange={(e) =>
+                  setEditingProject({ ...editingProject, tech: e.target.value })
+                }
+                className="w-full bg-white dark:bg-black border border-gray-300 dark:border-gray-700 rounded px-3 py-2 text-black dark:text-white"
+                placeholder="e.g., React, Node.js, MongoDB"
+                required
+              />
             </div>
             <div>
-              <label className="block text-gray-300 text-sm font-medium mb-1">Status</label>
-              <select value={editingProject.status} onChange={e => setEditingProject({ ...editingProject, status: e.target.value })} className="w-full bg-black border border-gray-700 rounded px-3 py-2 text-white">
+              <label className="block text-gray-300 text-sm font-medium mb-1">
+                Status
+              </label>
+              <select
+                value={editingProject.status}
+                onChange={(e) =>
+                  setEditingProject({
+                    ...editingProject,
+                    status: e.target.value,
+                  })
+                }
+                className="w-full bg-white dark:bg-black border border-gray-300 dark:border-gray-700 rounded px-3 py-2 text-black dark:text-white"
+              >
                 <option value="In Progress">In Progress</option>
                 <option value="Completed">Completed</option>
                 <option value="On Hold">On Hold</option>
@@ -313,27 +480,88 @@ export default function ProjectsAdmin() {
               </select>
             </div>
             <div>
-              <label className="block text-gray-300 text-sm font-medium mb-1">GitHub Link</label>
-              <input type="url" value={editingProject.githubUrl} onChange={e => setEditingProject({ ...editingProject, githubUrl: e.target.value })} className="w-full bg-black border border-gray-700 rounded px-3 py-2 text-white" placeholder="https://github.com/username/project" />
+              <label className="block text-gray-300 text-sm font-medium mb-1">
+                GitHub Link
+              </label>
+              <input
+                type="url"
+                value={editingProject.githubUrl}
+                onChange={(e) =>
+                  setEditingProject({
+                    ...editingProject,
+                    githubUrl: e.target.value,
+                  })
+                }
+                className="w-full bg-white dark:bg-black border border-gray-300 dark:border-gray-700 rounded px-3 py-2 text-black dark:text-white"
+                placeholder="https://github.com/username/project"
+              />
             </div>
             <div>
-              <label className="block text-gray-300 text-sm font-medium mb-1">GitHub Link Label</label>
-              <input type="text" value={editingProject.githubLabel} onChange={e => setEditingProject({ ...editingProject, githubLabel: e.target.value })} className="w-full bg-black border border-gray-700 rounded px-3 py-2 text-white" placeholder="GitHub" />
+              <label className="block text-gray-300 text-sm font-medium mb-1">
+                GitHub Link Label
+              </label>
+              <input
+                type="text"
+                value={editingProject.githubLabel}
+                onChange={(e) =>
+                  setEditingProject({
+                    ...editingProject,
+                    githubLabel: e.target.value,
+                  })
+                }
+                className="w-full bg-white dark:bg-black border border-gray-300 dark:border-gray-700 rounded px-3 py-2 text-black dark:text-white"
+                placeholder="GitHub"
+              />
             </div>
             <div>
-              <label className="block text-gray-300 text-sm font-medium mb-1">Project Link</label>
-              <input type="url" value={editingProject.liveUrl} onChange={e => setEditingProject({ ...editingProject, liveUrl: e.target.value })} className="w-full bg-black border border-gray-700 rounded px-3 py-2 text-white" placeholder="https://project-demo.com" />
+              <label className="block text-gray-300 text-sm font-medium mb-1">
+                Project Link
+              </label>
+              <input
+                type="url"
+                value={editingProject.liveUrl}
+                onChange={(e) =>
+                  setEditingProject({
+                    ...editingProject,
+                    liveUrl: e.target.value,
+                  })
+                }
+                className="w-full bg-white dark:bg-black border border-gray-300 dark:border-gray-700 rounded px-3 py-2 text-black dark:text-white"
+                placeholder="https://project-demo.com"
+              />
             </div>
             <div>
-              <label className="block text-gray-300 text-sm font-medium mb-1">Project Link Label</label>
-              <input type="text" value={editingProject.liveLabel} onChange={e => setEditingProject({ ...editingProject, liveLabel: e.target.value })} className="w-full bg-black border border-gray-700 rounded px-3 py-2 text-white" placeholder="Live Demo" />
+              <label className="block text-gray-300 text-sm font-medium mb-1">
+                Project Link Label
+              </label>
+              <input
+                type="text"
+                value={editingProject.liveLabel}
+                onChange={(e) =>
+                  setEditingProject({
+                    ...editingProject,
+                    liveLabel: e.target.value,
+                  })
+                }
+                className="w-full bg-white dark:bg-black border border-gray-300 dark:border-gray-700 rounded px-3 py-2 text-black dark:text-white"
+                placeholder="Live Demo"
+              />
             </div>
-            
+
             <div className="flex gap-4">
               <PrimaryButton type="submit" disabled={isLoading}>
                 {isLoading ? 'Updating...' : 'Update Project'}
               </PrimaryButton>
-              <button type="button" onClick={() => { setEditingProject(null); setView('list'); }} className="bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded font-medium">Cancel</button>
+              <button
+                type="button"
+                onClick={() => {
+                  setEditingProject(null);
+                  setView('list');
+                }}
+                className="bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded font-medium"
+              >
+                Cancel
+              </button>
             </div>
           </form>
         </div>

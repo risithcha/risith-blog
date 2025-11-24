@@ -1,28 +1,28 @@
 // Imports
-import { 
-  getFirestore, 
-  collection, 
-  doc, 
-  addDoc, 
-  getDoc, 
-  getDocs, 
-  updateDoc, 
-  deleteDoc, 
-  query, 
-  orderBy, 
-  where 
-} from "firebase/firestore";
-import app from "./firebase";
-import { 
-  generateSlug, 
-  formatDate, 
+import {
+  getFirestore,
+  collection,
+  doc,
+  addDoc,
+  getDoc,
+  getDocs,
+  updateDoc,
+  deleteDoc,
+  query,
+  orderBy,
+  where,
+} from 'firebase/firestore';
+import app from './firebase';
+import {
+  generateSlug,
+  formatDate,
   formatDateFull,
-  formatFirestoreDoc 
-} from "./firebase-utils";
+  formatFirestoreDoc,
+} from './firebase-utils';
 
 // Initialize Firestore and set collection name
 const db = getFirestore(app);
-const PROJECTS_COLLECTION = "projects";
+const PROJECTS_COLLECTION = 'projects';
 
 // Create a new project
 export const createProject = async (projectData) => {
@@ -31,9 +31,9 @@ export const createProject = async (projectData) => {
       ...projectData,
       createdAt: new Date(),
       updatedAt: new Date(),
-      published: true
+      published: true,
     });
-    
+
     return docRef.id;
   } catch (error) {
     throw error;
@@ -44,14 +44,14 @@ export const createProject = async (projectData) => {
 export const getAllProjects = async () => {
   try {
     const q = query(
-      collection(db, PROJECTS_COLLECTION), 
-      where("published", "==", true),
-      orderBy("createdAt", "desc")
+      collection(db, PROJECTS_COLLECTION),
+      where('published', '==', true),
+      orderBy('createdAt', 'desc')
     );
-    
+
     const querySnapshot = await getDocs(q);
     const projects = querySnapshot.docs.map(formatFirestoreDoc);
-    
+
     return projects;
   } catch (error) {
     throw error;
@@ -63,7 +63,7 @@ export const getProjectById = async (projectId) => {
   try {
     const docRef = doc(db, PROJECTS_COLLECTION, projectId);
     const docSnap = await getDoc(docRef);
-    
+
     if (docSnap.exists()) {
       return formatFirestoreDoc(docSnap);
     } else {
@@ -80,7 +80,7 @@ export const updateProject = async (projectId, updateData) => {
     const docRef = doc(db, PROJECTS_COLLECTION, projectId);
     await updateDoc(docRef, {
       ...updateData,
-      updatedAt: new Date()
+      updatedAt: new Date(),
     });
   } catch (error) {
     throw error;

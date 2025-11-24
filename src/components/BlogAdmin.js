@@ -2,7 +2,16 @@
 
 // Imports
 import { useState, useEffect } from 'react';
-import { createBlogPost, generateSlug, getAllBlogPosts, getBlogPostById, updateBlogPost, deleteBlogPost, formatPostDateFull } from '../lib/firebase-blog';
+import { useTheme } from 'next-themes';
+import {
+  createBlogPost,
+  generateSlug,
+  getAllBlogPosts,
+  getBlogPostById,
+  updateBlogPost,
+  deleteBlogPost,
+  formatPostDateFull,
+} from '../lib/firebase-blog';
 import PrimaryButton from './PrimaryButton';
 import MDEditor from '@uiw/react-md-editor';
 import ReactMarkdown from 'react-markdown';
@@ -11,6 +20,13 @@ import remarkGfm from 'remark-gfm';
 // Admin panel stuff for creating, viewing, editing, and deleting blog posts
 // This is where I can manage all my blog stuff
 export default function BlogAdmin() {
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  // Wait for theme to be mounted to avoid hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   // Track if we're currently saving a post (shows loading state)
   const [isLoading, setIsLoading] = useState(false);
   // Show success/error messages to the user
@@ -19,7 +35,7 @@ export default function BlogAdmin() {
   const [newPost, setNewPost] = useState({
     title: '',
     content: '',
-    excerpt: ''
+    excerpt: '',
   });
   // List of all existing posts
   const [posts, setPosts] = useState([]);
@@ -59,20 +75,20 @@ export default function BlogAdmin() {
         ...newPost,
         slug,
         published: true,
-        author: 'Risith'
+        author: 'Risith',
       };
 
       // Save the post to Firebase
       const postId = await createBlogPost(postData);
       setMessage(`New post created successfully! ID: ${postId}`);
-      
+
       // Reset form so I can create another post
       setNewPost({
         title: '',
         content: '',
-        excerpt: ''
+        excerpt: '',
       });
-      
+
       // Reload posts list
       await loadPosts();
       setView('list');
@@ -94,17 +110,17 @@ export default function BlogAdmin() {
       const slug = generateSlug(editingPost.title);
       const updateData = {
         ...editingPost,
-        slug
+        slug,
       };
 
       // Update the post in Firebase
       await updateBlogPost(editingPost.id, updateData);
       setMessage(`Post updated successfully!`);
-      
+
       // Reset editing state
       setEditingPost(null);
       setView('list');
-      
+
       // Reload posts list
       await loadPosts();
     } catch (error) {
@@ -129,7 +145,11 @@ export default function BlogAdmin() {
 
   // Delete a post
   const handleDeletePost = async (postId) => {
-    if (!confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
+    if (
+      !confirm(
+        'Are you sure you want to delete this post? This action cannot be undone.'
+      )
+    ) {
       return;
     }
 
@@ -139,7 +159,7 @@ export default function BlogAdmin() {
     try {
       await deleteBlogPost(postId);
       setMessage(`Post deleted successfully!`);
-      
+
       // Reload posts list
       await loadPosts();
     } catch (error) {
@@ -163,20 +183,20 @@ export default function BlogAdmin() {
       <div className="flex gap-4 mb-6">
         <button
           onClick={() => setView('list')}
-          className={`px-4 py-2 rounded font-medium ${
-            view === 'list' 
-              ? 'bg-purple-400 text-black' 
-              : 'bg-gray-700 text-white hover:bg-gray-600'
+          className={`px-4 py-2 rounded font-medium transition-colors ${
+            view === 'list'
+              ? 'bg-purple-400 text-black'
+              : 'bg-gray-300 dark:bg-gray-700 text-gray-900 dark:text-gray-300 hover:bg-gray-400 dark:hover:bg-gray-600 hover:text-gray-900 dark:hover:text-white'
           }`}
         >
           View Posts
         </button>
         <button
           onClick={() => setView('create')}
-          className={`px-4 py-2 rounded font-medium ${
-            view === 'create' 
-              ? 'bg-purple-400 text-black' 
-              : 'bg-gray-700 text-white hover:bg-gray-600'
+          className={`px-4 py-2 rounded font-medium transition-colors ${
+            view === 'create'
+              ? 'bg-purple-400 text-black'
+              : 'bg-gray-300 dark:bg-gray-700 text-gray-900 dark:text-gray-300 hover:bg-gray-400 dark:hover:bg-gray-600 hover:text-gray-900 dark:hover:text-white'
           }`}
         >
           Create New Post
@@ -185,11 +205,13 @@ export default function BlogAdmin() {
 
       {/* Message Display - shows success or error messages */}
       {message && (
-        <div className={`p-3 rounded ${
-          message.includes('successfully') 
-            ? 'bg-green-900/20 border border-green-700 text-green-300' 
-            : 'bg-red-900/20 border border-red-700 text-red-300'
-        }`}>
+        <div
+          className={`p-3 rounded ${
+            message.includes('successfully')
+              ? 'bg-green-100 dark:bg-green-900/20 border border-green-700 text-green-800 dark:text-green-300'
+              : 'bg-red-100 dark:bg-red-900/20 border border-red-700 text-red-800 dark:text-red-300'
+          }`}
+        >
           {message}
         </div>
       )}
@@ -197,15 +219,22 @@ export default function BlogAdmin() {
       {/* Posts List View */}
       {view === 'list' && (
         <div className="border border-gray-700 rounded p-4">
-          <h3 className="text-lg font-semibold text-white mb-4">All Blog Posts</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+            All Blog Posts
+          </h3>
           <div className="space-y-4">
             {posts.length === 0 ? (
               <p className="text-gray-400">No posts found.</p>
             ) : (
               posts.map((post) => (
-                <div key={post.id} className="border border-gray-600 rounded p-4">
+                <div
+                  key={post.id}
+                  className="border border-gray-600 rounded p-4"
+                >
                   <div className="flex justify-between items-start mb-2">
-                    <h4 className="text-lg font-medium text-white">{post.title}</h4>
+                    <h4 className="text-lg font-medium text-gray-900 dark:text-white">
+                      {post.title}
+                    </h4>
                     <div className="flex gap-2">
                       <button
                         onClick={() => startEdit(post.id)}
@@ -221,8 +250,10 @@ export default function BlogAdmin() {
                       </button>
                     </div>
                   </div>
-                  <p className="text-gray-400 text-sm mb-2">{post.excerpt}</p>
-                  <div className="text-gray-500 text-xs">
+                  <p className="text-gray-700 dark:text-gray-300 text-sm mb-2">
+                    {post.excerpt}
+                  </p>
+                  <div className="text-gray-500 dark:text-gray-400 text-xs">
                     <span>Created: {formatPostDateFull(post.createdAt)}</span>
                   </div>
                 </div>
@@ -235,44 +266,50 @@ export default function BlogAdmin() {
       {/* Create New Post Section */}
       {view === 'create' && (
         <div className="border border-gray-700 rounded p-4">
-          <h3 className="text-lg font-semibold text-white mb-4">Create New Blog Post</h3>
+          <h3 className="text-lg font-semibold text-black dark:text-white mb-4">
+            Create New Blog Post
+          </h3>
           <form onSubmit={handleCreatePost} className="space-y-4">
             {/* Post title input */}
             <div>
-              <label className="block text-gray-300 text-sm font-medium mb-1">
+              <label className="block text-black dark:text-white text-sm font-medium mb-1">
                 Title
               </label>
               <input
                 type="text"
                 value={newPost.title}
-                onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
-                className="w-full bg-black border border-gray-700 rounded px-3 py-2 text-white"
+                onChange={(e) =>
+                  setNewPost({ ...newPost, title: e.target.value })
+                }
+                className="w-full bg-white dark:bg-black border border-gray-300 dark:border-gray-700 rounded px-3 py-2 text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
                 required
               />
             </div>
-            
+
             {/* Post excerpt input - short preview text */}
             <div>
-              <label className="block text-gray-300 text-sm font-medium mb-1">
+              <label className="block text-black dark:text-white text-sm font-medium mb-1">
                 Excerpt
               </label>
               <input
                 type="text"
                 value={newPost.excerpt}
-                onChange={(e) => setNewPost({ ...newPost, excerpt: e.target.value })}
-                className="w-full bg-black border border-gray-700 rounded px-3 py-2 text-white"
+                onChange={(e) =>
+                  setNewPost({ ...newPost, excerpt: e.target.value })
+                }
+                className="w-full bg-white dark:bg-black border border-gray-300 dark:border-gray-700 rounded px-3 py-2 text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
                 required
               />
             </div>
-            
+
             {/* Markdown Editor Controls */}
             <div className="flex gap-2 mb-2 items-center">
               <button
                 type="button"
                 onClick={() => setPreviewMode('edit')}
                 className={`px-3 py-1 rounded text-sm font-medium ${
-                  previewMode === 'edit' 
-                    ? 'bg-purple-400 text-black' 
+                  previewMode === 'edit'
+                    ? 'bg-purple-400 text-black'
                     : 'bg-gray-700 text-white hover:bg-gray-600'
                 }`}
               >
@@ -282,8 +319,8 @@ export default function BlogAdmin() {
                 type="button"
                 onClick={() => setPreviewMode('preview')}
                 className={`px-3 py-1 rounded text-sm font-medium ${
-                  previewMode === 'preview' 
-                    ? 'bg-purple-400 text-black' 
+                  previewMode === 'preview'
+                    ? 'bg-purple-400 text-black'
                     : 'bg-gray-700 text-white hover:bg-gray-600'
                 }`}
               >
@@ -293,55 +330,73 @@ export default function BlogAdmin() {
                 type="button"
                 onClick={() => setPreviewMode('split')}
                 className={`px-3 py-1 rounded text-sm font-medium ${
-                  previewMode === 'split' 
-                    ? 'bg-purple-400 text-black' 
+                  previewMode === 'split'
+                    ? 'bg-purple-400 text-black'
                     : 'bg-gray-700 text-white hover:bg-gray-600'
                 }`}
               >
                 Split View
               </button>
             </div>
-            
+
             {/* Main content - Markdown Editor */}
             <div>
-              <label className="block text-gray-300 text-sm font-medium mb-1">
+              <label className="block text-black dark:text-white text-sm font-medium mb-1">
                 Content (Markdown)
               </label>
               {previewMode === 'edit' && (
-                <div data-color-mode="dark">
+                <div
+                  className="w-full"
+                  data-color-mode={
+                    mounted
+                      ? resolvedTheme === 'dark'
+                        ? 'dark'
+                        : 'light'
+                      : 'light'
+                  }
+                >
                   <MDEditor
                     value={newPost.content}
-                    onChange={(value) => setNewPost({ ...newPost, content: value || '' })}
+                    onChange={(value) =>
+                      setNewPost({ ...newPost, content: value || '' })
+                    }
                     height={400}
                     preview="edit"
-                    style={editorStyles}
                     className="w-full"
                   />
                 </div>
               )}
               {previewMode === 'preview' && (
-                <div className="border border-gray-700 rounded p-4 bg-black min-h-[400px] overflow-auto prose prose-invert max-w-none">
-                  <ReactMarkdown 
-                    remarkPlugins={[remarkGfm]}
-                  >
+                <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-black min-h-[400px] overflow-auto prose dark:prose-invert max-w-none text-black dark:text-white">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
                     {newPost.content}
                   </ReactMarkdown>
                 </div>
               )}
               {previewMode === 'split' && (
-                <div data-color-mode="dark">
+                <div
+                  className="w-full"
+                  data-color-mode={
+                    mounted
+                      ? resolvedTheme === 'dark'
+                        ? 'dark'
+                        : 'light'
+                      : 'light'
+                  }
+                >
                   <MDEditor
                     value={newPost.content}
-                    onChange={(value) => setNewPost({ ...newPost, content: value || '' })}
+                    onChange={(value) =>
+                      setNewPost({ ...newPost, content: value || '' })
+                    }
                     height={400}
                     preview="live"
-                    style={editorStyles}
                     className="w-full"
                   />
                 </div>
               )}
             </div>
-            
+
             {/* Submit button - disabled while saving */}
             <PrimaryButton type="submit" disabled={isLoading}>
               {isLoading ? 'Creating...' : 'Create Post'}
@@ -353,44 +408,50 @@ export default function BlogAdmin() {
       {/* Edit Post Section */}
       {view === 'edit' && editingPost && (
         <div className="border border-gray-700 rounded p-4">
-          <h3 className="text-lg font-semibold text-white mb-4">Edit Blog Post</h3>
+          <h3 className="text-lg font-semibold text-black dark:text-white mb-4">
+            Edit Blog Post
+          </h3>
           <form onSubmit={handleEditPost} className="space-y-4">
             {/* Post title input */}
             <div>
-              <label className="block text-gray-300 text-sm font-medium mb-1">
+              <label className="block text-black dark:text-white text-sm font-medium mb-1">
                 Title
               </label>
               <input
                 type="text"
                 value={editingPost.title}
-                onChange={(e) => setEditingPost({ ...editingPost, title: e.target.value })}
-                className="w-full bg-black border border-gray-700 rounded px-3 py-2 text-white"
+                onChange={(e) =>
+                  setEditingPost({ ...editingPost, title: e.target.value })
+                }
+                className="w-full bg-white dark:bg-black border border-gray-300 dark:border-gray-700 rounded px-3 py-2 text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
                 required
               />
             </div>
-            
+
             {/* Post excerpt input */}
             <div>
-              <label className="block text-gray-300 text-sm font-medium mb-1">
+              <label className="block text-black dark:text-white text-sm font-medium mb-1">
                 Excerpt
               </label>
               <input
                 type="text"
                 value={editingPost.excerpt}
-                onChange={(e) => setEditingPost({ ...editingPost, excerpt: e.target.value })}
-                className="w-full bg-black border border-gray-700 rounded px-3 py-2 text-white"
+                onChange={(e) =>
+                  setEditingPost({ ...editingPost, excerpt: e.target.value })
+                }
+                className="w-full bg-white dark:bg-black border border-gray-300 dark:border-gray-700 rounded px-3 py-2 text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
                 required
               />
             </div>
-            
+
             {/* Markdown Editor Controls */}
             <div className="flex gap-2 mb-2 items-center">
               <button
                 type="button"
                 onClick={() => setPreviewMode('edit')}
                 className={`px-3 py-1 rounded text-sm font-medium ${
-                  previewMode === 'edit' 
-                    ? 'bg-purple-400 text-black' 
+                  previewMode === 'edit'
+                    ? 'bg-purple-400 text-black'
                     : 'bg-gray-700 text-white hover:bg-gray-600'
                 }`}
               >
@@ -400,8 +461,8 @@ export default function BlogAdmin() {
                 type="button"
                 onClick={() => setPreviewMode('preview')}
                 className={`px-3 py-1 rounded text-sm font-medium ${
-                  previewMode === 'preview' 
-                    ? 'bg-purple-400 text-black' 
+                  previewMode === 'preview'
+                    ? 'bg-purple-400 text-black'
                     : 'bg-gray-700 text-white hover:bg-gray-600'
                 }`}
               >
@@ -411,55 +472,73 @@ export default function BlogAdmin() {
                 type="button"
                 onClick={() => setPreviewMode('split')}
                 className={`px-3 py-1 rounded text-sm font-medium ${
-                  previewMode === 'split' 
-                    ? 'bg-purple-400 text-black' 
+                  previewMode === 'split'
+                    ? 'bg-purple-400 text-black'
                     : 'bg-gray-700 text-white hover:bg-gray-600'
                 }`}
               >
                 Split View
               </button>
             </div>
-            
+
             {/* Main content - Markdown Editor */}
             <div>
-              <label className="block text-gray-300 text-sm font-medium mb-1">
+              <label className="block text-black dark:text-white text-sm font-medium mb-1">
                 Content (Markdown)
               </label>
               {previewMode === 'edit' && (
-                <div data-color-mode="dark">
+                <div
+                  className="w-full"
+                  data-color-mode={
+                    mounted
+                      ? resolvedTheme === 'dark'
+                        ? 'dark'
+                        : 'light'
+                      : 'light'
+                  }
+                >
                   <MDEditor
                     value={editingPost.content}
-                    onChange={(value) => setEditingPost({ ...editingPost, content: value || '' })}
+                    onChange={(value) =>
+                      setEditingPost({ ...editingPost, content: value || '' })
+                    }
                     height={400}
                     preview="edit"
-                    style={editorStyles}
                     className="w-full"
                   />
                 </div>
               )}
               {previewMode === 'preview' && (
-                <div className="border border-gray-700 rounded p-4 bg-black min-h-[400px] overflow-auto prose prose-invert max-w-none">
-                  <ReactMarkdown 
-                    remarkPlugins={[remarkGfm]}
-                  >
+                <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-black min-h-[400px] overflow-auto prose dark:prose-invert max-w-none text-black dark:text-white">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
                     {editingPost.content}
                   </ReactMarkdown>
                 </div>
               )}
               {previewMode === 'split' && (
-                <div data-color-mode="dark">
+                <div
+                  className="w-full"
+                  data-color-mode={
+                    mounted
+                      ? resolvedTheme === 'dark'
+                        ? 'dark'
+                        : 'light'
+                      : 'light'
+                  }
+                >
                   <MDEditor
                     value={editingPost.content}
-                    onChange={(value) => setEditingPost({ ...editingPost, content: value || '' })}
+                    onChange={(value) =>
+                      setEditingPost({ ...editingPost, content: value || '' })
+                    }
                     height={400}
                     preview="live"
-                    style={editorStyles}
                     className="w-full"
                   />
                 </div>
               )}
             </div>
-            
+
             {/* Action buttons */}
             <div className="flex gap-4">
               <PrimaryButton type="submit" disabled={isLoading}>

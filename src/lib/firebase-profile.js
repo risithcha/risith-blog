@@ -1,5 +1,11 @@
 // Imports
-import { getFirestore, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+} from 'firebase/firestore';
 import { app } from './firebase';
 
 // Initialize Firestore
@@ -11,7 +17,7 @@ const PROFILE_COLLECTION = 'profile';
 // Default profile data
 const defaultProfile = {
   bio: 'idk, I need to put something here.',
-  updatedAt: new Date()
+  updatedAt: new Date(),
 };
 
 // Get profile data
@@ -19,7 +25,7 @@ export async function getProfile() {
   try {
     const profileRef = doc(db, PROFILE_COLLECTION, 'main');
     const profileSnap = await getDoc(profileRef);
-    
+
     if (profileSnap.exists()) {
       return profileSnap.data();
     } else {
@@ -39,9 +45,9 @@ export async function setProfile(profileData) {
     const profileRef = doc(db, PROFILE_COLLECTION, 'main');
     const dataToSave = {
       ...profileData,
-      updatedAt: new Date()
+      updatedAt: new Date(),
     };
-    
+
     await setDoc(profileRef, dataToSave);
     return dataToSave;
   } catch (error) {
@@ -56,9 +62,9 @@ export async function updateProfile(updates) {
     const profileRef = doc(db, PROFILE_COLLECTION, 'main');
     const dataToUpdate = {
       ...updates,
-      updatedAt: new Date()
+      updatedAt: new Date(),
     };
-    
+
     await updateDoc(profileRef, dataToUpdate);
     return dataToUpdate;
   } catch (error) {

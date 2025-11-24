@@ -13,50 +13,50 @@ export const generateSlug = (title) => {
 
 // Format date for display (Month Year)
 export const formatDate = (date) => {
-  if (!date) return "Unknown date";
-  
-  return date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short"
+  if (!date) return 'Unknown date';
+
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
   });
 };
 
 // Format date with full details (Weekday, Month Day, Year)
 export const formatDateFull = (date) => {
-  if (!date) return "Unknown date";
-  
-  return date.toLocaleDateString("en-US", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric"
+  if (!date) return 'Unknown date';
+
+  return date.toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
   });
 };
 
 // Format date for homepage (Month Day, Year)
 export const formatDateHomepage = (date) => {
-  if (!date) return "Unknown date";
-  
-  return date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric"
+  if (!date) return 'Unknown date';
+
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
   });
 };
 
 // Get just the day number from a date
 export const getDay = (date) => {
-  if (!date) return "?";
+  if (!date) return '?';
   return date.getDate();
 };
 
 // Format month and year (Month Year)
 export const formatMonthYear = (date) => {
-  if (!date) return "Unknown";
-  
-  return date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short"
+  if (!date) return 'Unknown';
+
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
   });
 };
 
@@ -67,6 +67,6 @@ export const formatFirestoreDoc = (doc) => {
     id: doc.id,
     ...data,
     createdAt: data.createdAt?.toDate(),
-    updatedAt: data.updatedAt?.toDate()
+    updatedAt: data.updatedAt?.toDate(),
   };
 };

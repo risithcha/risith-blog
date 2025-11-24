@@ -12,7 +12,7 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
   // Keep track of the current user (null = not logged in)
   const [user, setUser] = useState(null);
-  
+
   // Loading state - prevents showing login form while Firebase is still checking
   const [loading, setLoading] = useState(true);
 
@@ -26,23 +26,19 @@ export function AuthProvider({ children }) {
       setLoading(false);
     });
 
-  // Clean up the listener when stuff unmounts (prevents memory leaks)
+    // Clean up the listener when stuff unmounts (prevents memory leaks)
     return () => unsubscribe();
   }, []); // Only run this once when stuff mounts
 
   // The data we want to share with all child stuff
   const value = {
-    user,                    // Current user (or null if not logged in)
-    loading,                 // Still loading the auth state?
-    isAuthenticated: !!user  // Quick way to check if someone's logged in
+    user, // Current user (or null if not logged in)
+    loading, // Still loading the auth state?
+    isAuthenticated: !!user, // Quick way to check if someone's logged in
   };
 
   // Wrap children with our auth context
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 // Hook to access auth context - call this to get auth info
@@ -54,6 +50,6 @@ export function useAuth() {
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
-  
+
   return context;
 }

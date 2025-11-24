@@ -24,7 +24,7 @@ export default function LoginForm({ onLoginSuccess }) {
 
     try {
       await signIn(email, password);
-  // If successful, tell the parent
+      // If successful, tell the parent
       onLoginSuccess();
     } catch (error) {
       setError('Invalid email or password. Please try again.');
@@ -35,8 +35,10 @@ export default function LoginForm({ onLoginSuccess }) {
 
   return (
     <div className="max-w-md mx-auto">
-      <h2 className="text-2xl font-bold text-white mb-6 text-center">Admin Login</h2>
-      
+      <h2 className="text-2xl font-bold text-black dark:text-white mb-6 text-center">
+        Admin Login
+      </h2>
+
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Email input field */}
         <div>
@@ -47,11 +49,11 @@ export default function LoginForm({ onLoginSuccess }) {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full bg-black border border-gray-700 rounded px-3 py-2 text-white focus:border-purple-400 focus:outline-none"
+            className="w-full bg-white dark:bg-black border border-gray-300 dark:border-gray-700 rounded px-3 py-2 text-black dark:text-white focus:border-purple-400 focus:outline-none"
             required
           />
         </div>
-        
+
         {/* Password input field */}
         <div>
           <label className="block text-gray-400 text-sm font-medium mb-1">
@@ -61,24 +63,20 @@ export default function LoginForm({ onLoginSuccess }) {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full bg-black border border-gray-700 rounded px-3 py-2 text-white focus:border-purple-400 focus:outline-none"
+            className="w-full bg-white dark:bg-black border border-gray-300 dark:border-gray-700 rounded px-3 py-2 text-black dark:text-white focus:border-purple-400 focus:outline-none"
             required
           />
         </div>
-        
+
         {/* Error message display */}
         {error && (
           <div className="bg-red-900/20 border border-red-700 text-red-300 px-3 py-2 rounded text-sm">
             {error}
           </div>
         )}
-        
+
         {/* Submit button - disabled while signing in */}
-        <PrimaryButton
-          type="submit"
-          disabled={isLoading}
-          fullWidth={true}
-        >
+        <PrimaryButton type="submit" disabled={isLoading} fullWidth={true}>
           {isLoading ? 'Signing in...' : 'Sign In'}
         </PrimaryButton>
       </form>

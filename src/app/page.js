@@ -1,5 +1,8 @@
 // Imports
-import { getRecentBlogPosts, formatPostDateHomepage } from '../lib/firebase-blog';
+import {
+  getRecentBlogPosts,
+  formatPostDateHomepage,
+} from '../lib/firebase-blog';
 import Image from 'next/image';
 import Link from 'next/link';
 import PageLayout from '../components/PageLayout';
@@ -15,9 +18,8 @@ export default async function Home() {
   let recentPosts = [];
   try {
     recentPosts = await getRecentBlogPosts(3);
-  } catch (error) {
-  }
-  
+  } catch (error) {}
+
   return (
     <PageLayout>
       <ContentContainer>
@@ -26,19 +28,21 @@ export default async function Home() {
           <div className="flex items-center gap-8">
             {/* Little funny image of Garfield (I LOVE GARFIELD) */}
             <div className="w-40 h-40 rounded-3xl overflow-hidden flex-shrink-0">
-              <Image 
-                src="/garfield.png" 
-                alt="Profile" 
-                width={160} 
-                height={160} 
+              <Image
+                src="/garfield.png"
+                alt="Profile"
+                width={160}
+                height={160}
                 className="w-full h-full object-cover"
               />
             </div>
-            
+
             {/* About me section */}
             <div className="flex-1 flex items-center">
-              <p className="text-gray-400 leading-relaxed text-sm">
-                This is my newly created blog to document my coding journey. I will talk about many things here. Hope you enjoy reading my posts! 
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-sm">
+                This is my newly created blog to document my coding journey. I
+                will talk about many things here. Hope you enjoy reading my
+                posts!
               </p>
             </div>
           </div>
@@ -48,40 +52,49 @@ export default async function Home() {
         <div className="pb-16">
           {/* Title and link to all blogs */}
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-xl font-semibold">RECENT BLOGS</h2>
-            <Link href="/blog" className="text-purple-400 text-sm hover:text-purple-300">ALL BLOGS</Link>
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+              RECENT BLOGS
+            </h2>
+            <Link
+              href="/blog"
+              className="text-purple-600 dark:text-purple-400 text-sm hover:text-purple-700 dark:hover:text-purple-300"
+            >
+              ALL BLOGS
+            </Link>
           </div>
-          
+
           {/* Recent blog posts list */}
           <div className="space-y-6">
             {/* Show message if no posts */}
             {recentPosts.length === 0 && (
-              <div className="text-gray-400 text-center py-8">
+              <div className="text-gray-600 dark:text-gray-400 text-center py-8">
                 No blog posts yet. Check back later!
               </div>
             )}
-            
+
             {/* Loop through recent posts */}
             {recentPosts.map((post, index) => (
               <div key={post.id} className="flex items-start space-x-6">
                 {/* Post number */}
-                <div className="text-6xl font-bold text-white w-20 text-center">
+                <div className="text-6xl font-bold text-gray-900 dark:text-white w-20 text-center">
                   {index + 1}
                 </div>
-                
+
                 {/* Post content */}
                 <div className="flex-1">
                   {/* Post title (clickable link) */}
-                  <h3 className="text-xl font-medium text-white mb-2 hover:text-purple-300 cursor-pointer">
+                  <h3 className="text-xl font-medium text-gray-900 dark:text-white mb-2 hover:text-purple-600 dark:hover:text-purple-300 cursor-pointer">
                     <Link href={`/blog/${post.slug}`}>{post.title}</Link>
                   </h3>
                   {/* Post preview text */}
-                  <p className="text-gray-400 text-sm mb-2">{post.excerpt}</p>
-                  
+                  <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">
+                    {post.excerpt}
+                  </p>
+
                   {/* Post date */}
-                   <div className="text-gray-500 text-xs">
-                     <span>{formatPostDateHomepage(post.createdAt)}</span>
-                   </div>
+                  <div className="text-gray-500 dark:text-gray-500 text-xs">
+                    <span>{formatPostDateHomepage(post.createdAt)}</span>
+                  </div>
                 </div>
               </div>
             ))}

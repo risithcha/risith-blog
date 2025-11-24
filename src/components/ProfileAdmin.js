@@ -2,6 +2,7 @@
 
 // Imports
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { getProfile, updateBio } from '../lib/firebase-profile';
 import PrimaryButton from './PrimaryButton';
 
@@ -55,7 +56,9 @@ export default function ProfileAdmin() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex justify-between items-center">
-        <h3 className="text-lg font-semibold text-white">Profile Management</h3>
+        <h3 className="text-lg font-semibold text-black dark:text-white">
+          Profile Management
+        </h3>
         {!isEditing && (
           <PrimaryButton onClick={() => setIsEditing(true)}>
             Edit Profile
@@ -65,11 +68,13 @@ export default function ProfileAdmin() {
 
       {/* Message Display */}
       {message && (
-        <div className={`p-3 rounded ${
-          message.includes('successfully') 
-            ? 'bg-green-900/20 border border-green-700 text-green-300' 
-            : 'bg-red-900/20 border border-red-700 text-red-300'
-        }`}>
+        <div
+          className={`p-3 rounded ${
+            message.includes('successfully')
+              ? 'bg-green-900/20 border border-green-700 text-green-300'
+              : 'bg-red-900/20 border border-red-700 text-red-300'
+          }`}
+        >
           {message}
         </div>
       )}
@@ -79,7 +84,7 @@ export default function ProfileAdmin() {
         <form onSubmit={handleSaveBio} className="space-y-4">
           {/* Bio Input */}
           <div>
-            <label className="block text-gray-300 text-sm font-medium mb-1">
+            <label className="block text-gray-700 dark:text-gray-300 text-sm font-semibold mb-1">
               Bio Text
             </label>
             {isEditing ? (
@@ -87,12 +92,12 @@ export default function ProfileAdmin() {
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}
                 rows={3}
-                className="w-full bg-black border border-gray-700 rounded px-3 py-2 text-white"
+                className="w-full bg-white dark:bg-black border border-gray-300 dark:border-gray-700 rounded px-3 py-2 text-black dark:text-white"
                 placeholder="Enter your bio text..."
                 required
               />
             ) : (
-              <div className="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2 text-gray-300 min-h-[60px] flex items-center">
+              <div className="w-full bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded px-3 py-2 text-gray-700 dark:text-gray-300 min-h-[60px] flex items-center">
                 {bio || 'No bio text set'}
               </div>
             )}
@@ -118,15 +123,25 @@ export default function ProfileAdmin() {
 
       {/* Preview Section */}
       <div className="border border-gray-700 rounded p-4">
-        <h4 className="text-white font-medium mb-3">Preview</h4>
-        <div className="bg-gray-900/50 rounded-lg p-4">
+        <h4 className="text-black dark:text-white font-medium mb-3">Preview</h4>
+        <div className="bg-gray-100 dark:bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 border border-gray-200 dark:border-gray-700/50">
           <div className="flex items-start space-x-4">
             <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 border-2 border-purple-500">
-              <img src="/MasterSheep.png" alt="Risith" className="w-full h-full object-cover" width={48} height={48} />
+              {/* Replaced <img> with Next.js <Image /> for optimization */}
+              <Image
+                src="/MasterSheep.png"
+                alt="Risith"
+                className="w-full h-full object-cover"
+                width={48}
+                height={48}
+                priority
+              />
             </div>
             <div className="flex-1">
-              <h3 className="text-white font-mono text-sm mb-1">Risith</h3>
-              <p className="text-gray-400 font-mono text-xs">
+              <h3 className="text-black dark:text-white font-mono text-sm mb-1">
+                Risith
+              </h3>
+              <p className="text-gray-700 dark:text-gray-400 font-mono text-xs">
                 {bio || 'No bio text set'}
               </p>
             </div>
