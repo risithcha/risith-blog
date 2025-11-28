@@ -95,29 +95,40 @@ export default async function ProjectsPage() {
                           </div>
                         )}
 
-                      {/* GitHub link */}
+                      {/* GitHub link (use user-provided label when available) */}
                       {project.githubUrl && (
                         <div className="mb-2">
                           <a
                             href={project.githubUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                            target={project.githubUrl.startsWith('/') ? '_self' : '_blank'}
+                            rel={project.githubUrl.startsWith('/') ? undefined : 'noopener noreferrer'}
                             className="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 text-sm"
                           >
-                            GitHub
+                            {project.githubLabel || 'GitHub'}
                           </a>
                         </div>
                       )}
 
-                      {/* Blog post link */}
-                      {project.slug && (
+                      {/* Use explicit user-provided project/blog URL instead of auto-generated slug link */}
+                      {project.liveUrl && (
                         <div className="mb-2">
-                          <a
-                            href={`/blog/${project.slug}`}
-                            className="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 text-sm"
-                          >
-                            Blog Post
-                          </a>
+                          {project.liveUrl.startsWith('/') ? (
+                            <a
+                              href={project.liveUrl}
+                              className="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 text-sm"
+                            >
+                              {project.liveLabel || 'Project Link'}
+                            </a>
+                          ) : (
+                            <a
+                              href={project.liveUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 text-sm"
+                            >
+                              {project.liveLabel || 'Project Link'}
+                            </a>
+                          )}
                         </div>
                       )}
 

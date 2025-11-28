@@ -4,7 +4,6 @@
 import { useState, useEffect } from 'react';
 import {
   createProject,
-  generateProjectSlug,
   getAllProjects,
   getProjectById,
   updateProject,
@@ -26,6 +25,7 @@ export default function ProjectsAdmin() {
     description: '',
     tech: '',
     status: 'In Progress',
+    slug: '',
     githubUrl: '',
     githubLabel: 'GitHub',
     liveUrl: '',
@@ -66,7 +66,6 @@ export default function ProjectsAdmin() {
           .split(',')
           .map((t) => t.trim())
           .filter(Boolean),
-        slug: generateProjectSlug(newProject.title),
         published: true,
         author: 'Risith',
       };
@@ -77,6 +76,7 @@ export default function ProjectsAdmin() {
         description: '',
         tech: '',
         status: 'In Progress',
+        slug: '',
         githubUrl: '',
         githubLabel: 'GitHub',
         liveUrl: '',
@@ -98,15 +98,14 @@ export default function ProjectsAdmin() {
     setMessage('');
 
     try {
-      const updateData = {
+      const projectData = {
         ...editingProject,
         tech: editingProject.tech
           .split(',')
           .map((t) => t.trim())
           .filter(Boolean),
-        slug: generateProjectSlug(editingProject.title),
       };
-      await updateProject(editingProject.id, updateData);
+      await updateProject(editingProject.id, projectData);
       setMessage(`Project updated successfully!`);
       setEditingProject(null);
       setView('list');
@@ -341,6 +340,20 @@ export default function ProjectsAdmin() {
             </div>
             <div>
               <label className="block text-gray-700 dark:text-gray-300 text-sm font-semibold mb-1">
+                Slug (optional, for internal reference)
+              </label>
+              <input
+                type="text"
+                value={newProject.slug}
+                onChange={(e) =>
+                  setNewProject({ ...newProject, slug: e.target.value })
+                }
+                className="w-full bg-white dark:bg-black border border-gray-300 dark:border-gray-700 rounded px-3 py-2 text-black dark:text-white"
+                placeholder="e.g., my-awesome-project"
+              />
+            </div>
+            <div>
+              <label className="block text-gray-700 dark:text-gray-300 text-sm font-semibold mb-1">
                 GitHub Link
               </label>
               <input
@@ -478,6 +491,20 @@ export default function ProjectsAdmin() {
                 <option value="On Hold">On Hold</option>
                 <option value="Planning">Planning</option>
               </select>
+            </div>
+            <div>
+              <label className="block text-gray-300 text-sm font-medium mb-1">
+                Slug (optional, for internal reference)
+              </label>
+              <input
+                type="text"
+                value={editingProject.slug || ''}
+                onChange={(e) =>
+                  setEditingProject({ ...editingProject, slug: e.target.value })
+                }
+                className="w-full bg-white dark:bg-black border border-gray-300 dark:border-gray-700 rounded px-3 py-2 text-black dark:text-white"
+                placeholder="e.g., my-awesome-project"
+              />
             </div>
             <div>
               <label className="block text-gray-300 text-sm font-medium mb-1">
