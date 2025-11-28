@@ -1,7 +1,7 @@
 {
   "name": "risith-blog",
   "version": "1.0.0",
-  "description": "A modern, responsive blog website built with Next.js, React, and Tailwind CSS featuring a dark theme design",
+  "description": "Risith's personal blog",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",

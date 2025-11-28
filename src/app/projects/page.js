@@ -3,6 +3,10 @@ import PageLayout from '../../components/PageLayout';
 import ContentContainer from '../../components/ContentContainer';
 import { getAllProjects } from '../../lib/firebase-projects';
 
+// Force dynamic rendering to always fetch fresh data from Firebase
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 // Projects showcase page - displays all published projects
 export default async function ProjectsPage() {
   // Fetch all projects from Firebase
