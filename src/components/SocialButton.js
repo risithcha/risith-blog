@@ -2,18 +2,16 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 // Reusable social button stuff with consistent styling
-export default function SocialButton({ href, icon, label, isEmail = false }) {
+export default function SocialButton({ href, icon, Icon, label, isEmail = false }) {
   const ButtonContent = () => (
     <>
-      {/* Replaced <img> with Next.js <Image /> for optimization. If icon is SVG or remote, unoptimized is set. */}
-      <Image
-        src={icon}
-        alt={label}
-        className="w-5 h-5"
-        width={20}
-        height={20}
-        unoptimized
-      />
+      {Icon ? (
+        // Render icon component passed as a prop
+        <Icon className="w-5 h-5" aria-hidden />
+      ) : (
+        // Fallback to legacy image path
+        <Image src={icon} alt={label} className="w-5 h-5" width={20} height={20} unoptimized />
+      )}
       {label}
     </>
   );
@@ -30,12 +28,7 @@ export default function SocialButton({ href, icon, label, isEmail = false }) {
   }
 
   return (
-    <Link
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={buttonClass}
-    >
+    <Link href={href} target="_blank" rel="noopener noreferrer" className={buttonClass}>
       <ButtonContent />
     </Link>
   );

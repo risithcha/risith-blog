@@ -5,6 +5,8 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { getProfile } from '../lib/firebase-profile';
 import SocialButton from './SocialButton';
+import { FaGithub, FaLinkedin } from 'react-icons/fa';
+import { HiOutlineMail } from 'react-icons/hi';
 
 // Profile card stuff showing bio and social links
 export default function ProfileCard() {
@@ -51,22 +53,9 @@ export default function ProfileCard() {
 
           {/* Social Links */}
           <div className="flex gap-3">
-            <SocialButton
-              href="https://github.com/risithcha"
-              icon="/github.png"
-              label="GITHUB"
-            />
-            <SocialButton
-              href="https://linkedin.com/in/risithcha/"
-              icon="/linkedin.png"
-              label="LINKEDIN"
-            />
-            <SocialButton
-              href="mailto:risithcha@gmail.com"
-              icon="/email.png"
-              label="EMAIL"
-              isEmail={true}
-            />
+            <SocialButton href="https://github.com/risithcha" Icon={FaGithub} label="GITHUB" />
+            <SocialButton href="https://linkedin.com/in/risithcha/" Icon={FaLinkedin} label="LINKEDIN" />
+            <SocialButton href="mailto:risithcha@gmail.com" Icon={HiOutlineMail} label="EMAIL" isEmail={true} />
           </div>
         </div>
       </div>
