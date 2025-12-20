@@ -11,6 +11,7 @@ import {
   query,
   orderBy,
   where,
+  increment,
 } from 'firebase/firestore';
 import app from './firebase';
 import {
@@ -35,6 +36,7 @@ export const createBlogPost = async (postData) => {
       createdAt: new Date(),
       updatedAt: new Date(),
       published: true,
+      views: 0,
     });
 
     return docRef.id;
@@ -143,6 +145,55 @@ export const getRecentBlogPosts = async (count = 3) => {
     return posts;
   } catch (error) {
     throw error;
+  }
+};
+
+// Get popular blog posts (sorted by views, then by creation date)
+export const getPopularBlogPosts = async (count = 3) => {
+  try {
+    // Grab published posts first.
+    const q = query(
+      collection(db, POSTS_COLLECTION),
+      where('published', '==', true),
+      orderBy('createdAt', 'desc')
+    );
+
+    const querySnapshot = await getDocs(q);
+    const posts = querySnapshot.docs.map(formatFirestoreDoc);
+
+    // Sort by views (descending), then by creation date (descending)
+    // If there's a tie on views, show the newer one first.
+    posts.sort((a, b) => {
+      if (b.views !== a.views) {
+        return b.views - a.views; // Sort by views descending
+      }
+      
+      // If same views, sort by creation date descending
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    });
+
+    return posts.slice(0, count);
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Increment the view count for a blog post
+// Increment using Firestore's atomic increment to avoid race conditions.
+// Only updates 'views' and 'updatedAt' so our rules can safely allow updates.
+export const incrementBlogPostViews = async (postId) => {
+  try {
+    const docRef = doc(db, POSTS_COLLECTION, postId);
+    const updateData = {
+      views: increment(1),
+      updatedAt: new Date(),
+    };
+    await updateDoc(docRef, updateData);
+    return { success: true };
+  } catch (error) {
+      console.error('Error incrementing blog post views:', error);
+    // Don't throw - this shouldn't break the page if it fails
+    return { success: false, error };
   }
 };
 

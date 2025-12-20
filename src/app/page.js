@@ -1,6 +1,6 @@
 // Imports
 import {
-  getRecentBlogPosts,
+  getPopularBlogPosts,
   formatPostDateHomepage,
 } from '../lib/firebase-blog';
 import Image from 'next/image';
@@ -14,10 +14,10 @@ export const revalidate = 0;
 
 // Homepage stuff
 export default async function Home() {
-  // Get the 3 most recent blog posts from Firebase
-  let recentPosts = [];
+  // Get the 3 most popular blog posts from Firebase
+  let popularPosts = [];
   try {
-    recentPosts = await getRecentBlogPosts(3);
+    popularPosts = await getPopularBlogPosts(3);
   } catch (error) {}
 
   return (
@@ -48,12 +48,12 @@ export default async function Home() {
           </div>
         </div>
 
-        {/* Recent Blogs Section */}
+        {/* Popular Blogs Section */}
         <div className="pb-16">
           {/* Title and link to all blogs */}
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-              RECENT BLOGS
+              POPULAR BLOGS
             </h2>
             <Link
               href="/blog"
@@ -63,17 +63,17 @@ export default async function Home() {
             </Link>
           </div>
 
-          {/* Recent blog posts list */}
+          {/* Popular blog posts list */}
           <div className="space-y-6">
             {/* Show message if no posts */}
-            {recentPosts.length === 0 && (
+            {popularPosts.length === 0 && (
               <div className="text-gray-600 dark:text-gray-400 text-center py-8">
                 No blog posts yet. Check back later!
               </div>
             )}
 
-            {/* Loop through recent posts */}
-            {recentPosts.map((post, index) => (
+            {/* Loop through popular posts */}
+            {popularPosts.map((post, index) => (
               <div key={post.id} className="flex items-start space-x-6">
                 {/* Post number */}
                 <div className="text-6xl font-bold text-gray-900 dark:text-white w-20 text-center">
@@ -91,9 +91,12 @@ export default async function Home() {
                     {post.excerpt}
                   </p>
 
-                  {/* Post date */}
-                  <div className="text-gray-500 dark:text-gray-500 text-xs">
+                  {/* Post metadata - date and views */}
+                  <div className="text-gray-500 dark:text-gray-500 text-xs flex items-center gap-4">
                     <span>{formatPostDateHomepage(post.createdAt)}</span>
+                    <span className="text-purple-600 dark:text-purple-400 font-medium">
+                      {post.views} views
+                    </span>
                   </div>
                 </div>
               </div>

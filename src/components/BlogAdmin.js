@@ -253,8 +253,11 @@ export default function BlogAdmin() {
                   <p className="text-gray-700 dark:text-gray-300 text-sm mb-2">
                     {post.excerpt}
                   </p>
-                  <div className="text-gray-500 dark:text-gray-400 text-xs">
+                  <div className="text-gray-500 dark:text-gray-400 text-xs flex items-center gap-4">
                     <span>Created: {formatPostDateFull(post.createdAt)}</span>
+                    <span className="text-purple-400 font-medium">
+                      {post.views} views
+                    </span>
                   </div>
                 </div>
               ))

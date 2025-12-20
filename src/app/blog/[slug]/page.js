@@ -7,6 +7,7 @@ import {
 import PageLayout from '../../../components/PageLayout';
 import ContentContainer from '../../../components/ContentContainer';
 import ProfileCard from '../../../components/ProfileCard';
+import ViewTracker from '../../../components/ViewTracker';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -59,6 +60,9 @@ export default async function BlogPost({ params }) {
 
   return (
     <PageLayout>
+      {/* View tracker */}
+      <ViewTracker postId={post.id} />
+      
       <ContentContainer>
         {/* Blog Post */}
         <article className="py-16">
