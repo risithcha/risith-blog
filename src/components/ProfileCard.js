@@ -54,7 +54,7 @@ export default function ProfileCard() {
           {/* Social Links */}
           <div className="flex flex-wrap gap-3">
             <SocialButton href="https://github.com/risithcha" Icon={SiGithub} label="GITHUB" />
-            <SocialButton href="https://linkedin.com/in/risithcha/" Icon={SiLinkedin} label="LINKEDIN" />
+            <SocialButton href="https://www.linkedin.com/in/risith-kankanamge/" Icon={SiLinkedin} label="LINKEDIN" />
             <SocialButton href="mailto:risithcha@gmail.com" Icon={HiOutlineMail} label="EMAIL" isEmail={true} />
           </div>
         </div>
